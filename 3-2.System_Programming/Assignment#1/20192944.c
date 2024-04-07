@@ -82,13 +82,13 @@ void print_ASCII(int8_t *bit_arr)
     printf("\n");
 }
 
-void print_unsigned_char(uint8_t *bit_arr)
+void print_unsigned_char(int8_t *bit_arr)
 {
     printf("[*] unsigned char: ");
     for (int i = 0; i < BUF_SIZE; i += 8)
     {
         // unsigned char == uint8_t (8bit)
-        uint8_t val = 0;
+        int8_t val = 0;
         for (int j = 0; j < 8; j++)
         {
             val |= (bit_arr[i + j] << (7 - j));
@@ -108,7 +108,7 @@ void print_signed_int(int8_t *bit_arr)
         int32_t val = 0;
         for (int j = 0; j < 32; j++)
         {
-            val |= (bit_arr[i + j] << (31 - j));
+            val |= ((int32_t)bit_arr[i + j] << (31 - j));
         }
         printf("%d ", val);
     }
@@ -124,7 +124,7 @@ void print_unsigned_int(int8_t *bit_arr)
         uint32_t val = 0;
         for (int j = 0; j < 32; j++)
         {
-            val |= (bit_arr[i + j] << (31 - j));
+            val |= ((uint32_t)(uint8_t)bit_arr[i + j] << (31 - j));
         }
         // print as unsigned value
         printf("%u ", val);
@@ -142,12 +142,12 @@ void print_float(int8_t *bit_arr)
         for (int j = 0; j < 32; j++)
         {
             // index of bit_arr is 1byte(8bit), so we need to make it 4byte(32bit) with casting
-            val |= ((uint32_t)bit_arr[i + j] << (31 - j));
+            val |= ((int32_t)bit_arr[i + j] << (31 - j));
         }
         // save data in bytes with memcpy
         float float_val;
         memcpy(&float_val, &val, sizeof(float));
-        printf("%f ", float_val);
+        printf("%.4f ", float_val);
     }
     printf("\n");
 }
@@ -162,12 +162,12 @@ void print_double(int8_t *bit_arr)
         for (int j = 0; j < 64; j++)
         {
             // index of bit_arr is 1byte(8bit), so we need to make it 8byte(64bit) with casting
-            val |= ((uint64_t)bit_arr[i + j] << (63 - j));
+            val |= ((int64_t)bit_arr[i + j] << (63 - j));
         }
         // save data in bytes with memcpy
         double double_val;
         memcpy(&double_val, &val, sizeof(double));
-        printf("%lf ", double_val);
+        printf("%.4lf ", double_val);
     }
     printf("\n");
 }
@@ -190,5 +190,6 @@ int main(int argc, char *argv[])
 
     print_double(bit_arr);
 
+    free(bit_arr);
     return 0;
 }
