@@ -6,16 +6,19 @@ int8_t *get_input()
 {
     FILE *fp;
     int8_t *buffer = (int8_t *)malloc(MAX_BUF_SIZE);
+
     char filename[] = "input";
 
     fp = fopen(filename, "r");
 
+    // Handle file exception
     if (fp == NULL)
     {
         printf("[*] Failed to read file..\n");
         return 1;
     }
 
+    // Handle file exception
     if (fgets(buffer, MAX_BUF_SIZE, fp) == NULL)
     {
         printf("[*] Failed to read file..\n");
@@ -27,9 +30,10 @@ int8_t *get_input()
 
     printf("[*] input: %s\n\n", buffer);
 
+    // convert char -> numeric value
     for (int i = 0; buffer[i] != '\0'; i++)
     {
-        buffer[i] -= 48;
+        buffer[i] -= '0';
     }
 
     fclose(fp);
@@ -40,8 +44,10 @@ int8_t *get_input()
 void print_signed_char(int8_t *bit_arr)
 {
     printf("[*] Signed char: ");
+    // outer 'for' statement jump '8bytes'(== size of signed char)
     for (int i = 0; i < BUF_SIZE; i += 8)
     {
+        // XOR operation with shifting bit-by-bit
         int8_t val = 0;
         for (int j = 0; j < 8; j++)
         {
@@ -52,16 +58,18 @@ void print_signed_char(int8_t *bit_arr)
     printf("\n");
 }
 
-void print_ASCII(uint8_t *bit_arr)
+void print_ASCII(int8_t *bit_arr)
 {
     printf("[*] ASCII codes: ");
     for (int i = 0; i < BUF_SIZE; i += 8)
     {
-        uint8_t val = 0;
+        // Same as signed char(32bit)
+        int8_t val = 0;
         for (int j = 0; j < 8; j++)
         {
             val |= (bit_arr[i + j] << (7 - j));
         }
+        // ASCII val (33~126)
         if (val > ASCII_MAX | val < ASCII_MIN)
         {
             printf(". ");
@@ -79,11 +87,13 @@ void print_unsigned_char(uint8_t *bit_arr)
     printf("[*] unsigned char: ");
     for (int i = 0; i < BUF_SIZE; i += 8)
     {
+        // unsigned char == uint8_t (8bit)
         uint8_t val = 0;
         for (int j = 0; j < 8; j++)
         {
             val |= (bit_arr[i + j] << (7 - j));
         }
+        // print as unsigned value
         printf("%u ", val);
     }
     printf("\n");
@@ -94,6 +104,7 @@ void print_signed_int(int8_t *bit_arr)
     printf("[*] signed int: ");
     for (int i = 0; i < BUF_SIZE; i += 32)
     {
+        // we need 4byte(32bit) value to print as signed int
         int32_t val = 0;
         for (int j = 0; j < 32; j++)
         {
@@ -109,11 +120,13 @@ void print_unsigned_int(int8_t *bit_arr)
     printf("[*] unsigned int: ");
     for (int i = 0; i < BUF_SIZE; i += 32)
     {
+        // we need 4byte(32bit) value to print as unsigned int
         uint32_t val = 0;
         for (int j = 0; j < 32; j++)
         {
             val |= (bit_arr[i + j] << (31 - j));
         }
+        // print as unsigned value
         printf("%u ", val);
     }
     printf("\n");
@@ -124,11 +137,14 @@ void print_float(int8_t *bit_arr)
     printf("[*] float: ");
     for (int i = 0; i < BUF_SIZE; i += 32)
     {
+        // we need 4byte value to print float(4byte)
         int32_t val = 0;
         for (int j = 0; j < 32; j++)
         {
+            // index of bit_arr is 1byte(8bit), so we need to make it 4byte(32bit) with casting
             val |= ((uint32_t)bit_arr[i + j] << (31 - j));
         }
+        // save data in bytes with memcpy
         float float_val;
         memcpy(&float_val, &val, sizeof(float));
         printf("%f ", float_val);
@@ -141,11 +157,14 @@ void print_double(int8_t *bit_arr)
     printf("[*] double: ");
     for (int i = 0; i < BUF_SIZE; i += 64)
     {
+        // we need 8byte value to print double(8byte)
         int64_t val = 0;
         for (int j = 0; j < 64; j++)
         {
+            // index of bit_arr is 1byte(8bit), so we need to make it 8byte(64bit) with casting
             val |= ((uint64_t)bit_arr[i + j] << (63 - j));
         }
+        // save data in bytes with memcpy
         double double_val;
         memcpy(&double_val, &val, sizeof(double));
         printf("%lf ", double_val);
