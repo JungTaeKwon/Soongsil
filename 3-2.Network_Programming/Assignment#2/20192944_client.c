@@ -5,10 +5,11 @@ void sigintHandler(int);
 
 int main(int argc, char **argv)
 {
+    char wBuff[BUFSIZ];
+    char rBuff[BUFSIZ];
     int clntSd;
     struct sockaddr_in clntAddr;
     int clntAddrLen, readLen, recvByte, maxBuff;
-    char rBuff[BUFSIZ];
     signal(SIGINT, sigintHandler);
 
     if (argc != 3)
@@ -36,7 +37,6 @@ int main(int argc, char **argv)
 
     while (1)
     {
-        char wBuff[BUFSIZ];
         signal(SIGINT, sigintHandler);
         printf("[*] TO SERVER: ");
         fgets(wBuff, BUFSIZ - 1, stdin);
