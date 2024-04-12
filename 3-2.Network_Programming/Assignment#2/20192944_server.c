@@ -58,7 +58,7 @@ int main(int argc, char **argv)
                 if (readLen == 0)
                     break;
                 rBuff[readLen] = '\0';
-                printf("[*] Client(%d): %s\n",
+                printf("[*] Received From Client(#%d): %s\n",
                        ntohs(clntAddr.sin_port), rBuff);
 
                 if (strcmp(rBuff, "1") == 0)
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
                         continue;
                     }
                     sprintf(wBuff, "[ %.2f %c %.2f = %.2f ]", a, operator, b, result);
-                    printf("%s\n", wBuff);
+
                     send(clntSd, wBuff, strlen(wBuff), 0);
                 }
                 else if (strcmp(rBuff, "q") == 0)
@@ -129,6 +129,7 @@ int main(int argc, char **argv)
                 else
                 {
                     memcpy(wBuff, rBuff, strlen(rBuff));
+                    wBuff[strlen(rBuff)] = '\0';
                     send(clntSd, wBuff, strlen(wBuff), 0);
                 }
             }
