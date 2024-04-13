@@ -1,7 +1,6 @@
 #include "20192944_server.h"
 
 void errProc(const char *);
-void errPrint(const char *);
 int32_t calculate(int32_t, int32_t, char *, char *, sockaddr_in);
 
 int main(int argc, char **argv)
@@ -126,11 +125,6 @@ void errProc(const char *str)
 {
     fprintf(stderr, "%s: %s \n", str, strerror(errno));
     exit(1);
-}
-
-void errPrint(const char *str)
-{
-    fprintf(stderr, "%s: %s \n", str, strerror(errno));
 }
 
 int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, sockaddr_in clntAddr)
