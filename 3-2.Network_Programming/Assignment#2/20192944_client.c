@@ -1,15 +1,15 @@
 #include "20192944_client.h"
 
 void err_proc();
-void sigintHandler(int);
+void sigintHandler(int32_t);
 
 int main(int argc, char **argv)
 {
     char wBuff[BUFSIZ];
     char rBuff[BUFSIZ];
-    int clntSd;
+    int32_t clntSd;
     struct sockaddr_in clntAddr;
-    int clntAddrLen, readLen, recvByte, maxBuff;
+    int32_t clntAddrLen, readLen, recvByte, maxBuff;
     signal(SIGINT, sigintHandler);
 
     if (argc != 3)
@@ -80,7 +80,7 @@ void err_proc()
     exit(errno);
 }
 
-void sigintHandler(int signum)
+void sigintHandler(int32_t signum)
 {
     printf("\n\n[*] SIGINT received. Ignoring...\n");
     printf("[*] 'q' to exit...\n\n");
