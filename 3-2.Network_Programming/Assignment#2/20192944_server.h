@@ -20,3 +20,5 @@
 
 #define CONTINUE 1
 #define BREAK 0
+#define VALID_ARGC 2
+#define CONTINUE_UNTIL_CLIENT_QUIT 1

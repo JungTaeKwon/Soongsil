@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 
     pid_t pid;
 
-    if (argc != 2)
+    if (argc != VALID_ARGC)
     {
         printf("[*] Usage: %s [port] \n", argv[0]);
         exit(1);
@@ -29,14 +29,14 @@ int main(int argc, char **argv)
     srvAddr.sin_family = AF_INET;
     srvAddr.sin_port = htons(atoi(argv[1]));
 
-    // Allocate PORT with bind()
+    // Allocate IP and PORT with bind()
     if (bind(srvSd, (struct sockaddr *)&srvAddr, sizeof(srvAddr)) == -1)
         errProc("[*] ERROR");
     if (listen(srvSd, 5) < 0)
         errProc("[*] ERROR");
     clntAddrLen = sizeof(clntAddr);
 
-    while (1)
+    while (CONTINUE_UNTIL_CLIENT_QUIT)
     {
         // Connect with client
         clntSd = accept(srvSd, (struct sockaddr *)&clntAddr, &clntAddrLen);
