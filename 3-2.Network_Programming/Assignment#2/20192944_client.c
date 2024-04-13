@@ -78,6 +78,7 @@ int main(int argc, char **argv)
         {
             exit(0);
         }
+        fflush(stdin);
     }
     close(clntSd);
     // Set max val after closing socket
