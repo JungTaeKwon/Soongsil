@@ -38,24 +38,32 @@ int main(int argc, char **argv)
     while (1)
     {
         signal(SIGINT, sigintHandler);
-        printf("[*] TO SERVER: ");
-        fgets(wBuff, BUFSIZ - 1, stdin);
-        readLen = strlen(wBuff);
-        if (readLen < 2)
-            continue;
-        send(clntSd, wBuff, readLen - 1, 0);
-        recvByte = 0;
 
+        printf("[*] TO SERVER: ");
+        if (!fgets(wBuff, BUFSIZ - 1, stdin))
+        {
+            continue;
+        }
+
+        readLen = strlen(wBuff);
+        if (strcmp(wBuff, "\n") == 0)
+        {
+            continue;
+        }
+        send(clntSd, wBuff, readLen - 1, 0);
+
+        recvByte = 0;
         maxBuff = BUFSIZ - 1;
+
         do
         {
             recvByte += recv(clntSd, rBuff, maxBuff, 0);
+
             maxBuff -= recvByte;
         } while (recvByte < (readLen - 1));
         rBuff[recvByte] = '\0';
 
         printf("[*] FROM SERVER: %s\n\n", rBuff);
-
         if (strcmp(rBuff, "q") == 0)
         {
             exit(0);
@@ -74,6 +82,7 @@ void err_proc()
 
 void sigintHandler(int signum)
 {
-    printf("\n[*] SIGINT received. Ignoring...\n");
+    printf("\n\n[*] SIGINT received. Ignoring...\n");
+    printf("[*] 'q' to exit...\n\n");
     return;
 }
