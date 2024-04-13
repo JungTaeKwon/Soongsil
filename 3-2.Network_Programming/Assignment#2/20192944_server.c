@@ -127,6 +127,7 @@ void errProc(const char *str)
     exit(1);
 }
 
+// Only support forms like [a+b=c..]
 int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, sockaddr_in clntAddr)
 {
     float32_t a, b, result;
@@ -139,8 +140,9 @@ int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, soc
         return BREAK;
     rBuff[readLen] = '\0';
     printf("[*] Client(%d): %s\n",
-           ntohs(clntAddr.sin_port), rBuff);
+           ntohs(clntAddr.sin_port), rBuff); // NBO (serialization)
 
+    // Copy date
     sscanf(rBuff, "%f %c %f", &a, &operator, & b);
     switch (operator)
     {
@@ -176,6 +178,7 @@ int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, soc
         }
         return CONTINUE;
     }
+    // Copy to write buffer
     sprintf(wBuff, "[ %.2f %c %.2f = %.2f ]", a, operator, b, result);
 
     send(clntSd, wBuff, strlen(wBuff), 0);
