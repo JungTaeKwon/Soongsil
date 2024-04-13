@@ -130,7 +130,7 @@ void errProc(const char *str)
 // Only support forms like [a+b=c..]
 int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, sockaddr_in clntAddr)
 {
-    float32_t a, b, result;
+    int32_t a, b, result;
     char operator;
 
     send(clntSd, CALCULATOR_MENU, strlen(CALCULATOR_MENU), 0);
@@ -142,8 +142,8 @@ int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, soc
     printf("[*] Client(%d): %s\n",
            ntohs(clntAddr.sin_port), rBuff); // NBO (serialization)
 
-    // Copy date
-    sscanf(rBuff, "%f %c %f", &a, &operator, & b);
+    // Copy data
+    sscanf(rBuff, "%d %c %d", &a, &operator, & b);
     switch (operator)
     {
     case '+':
@@ -179,7 +179,7 @@ int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, soc
         return CONTINUE;
     }
     // Copy to write buffer
-    sprintf(wBuff, "[ %.2f %c %.2f = %.2f ]", a, operator, b, result);
+    sprintf(wBuff, "[ %d %c %d = %d ]", a, operator, b, result);
 
     send(clntSd, wBuff, strlen(wBuff), 0);
 }
