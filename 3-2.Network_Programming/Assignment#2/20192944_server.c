@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     srvAddr.sin_family = AF_INET;
     srvAddr.sin_port = htons(atoi(argv[1]));
 
-    // Allocate IP and PORT with bind()
+    // Allocate PORT with bind()
     if (bind(srvSd, (struct sockaddr *)&srvAddr, sizeof(srvAddr)) == -1)
         errProc("[*] ERROR");
     if (listen(srvSd, 5) < 0)
