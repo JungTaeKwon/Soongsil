@@ -56,7 +56,7 @@ int main(int argc, char **argv)
                 char rBuff[BUFSIZ];
                 char wBuff[BUFSIZ];
 
-                readLen = recv(clntSd, rBuff, sizeof(rBuff) - 1, 0);
+                readLen = recv(clntSd, rBuff, BUFSIZ - 1, 0);
                 if (readLen == 0)
                     break;
                 rBuff[readLen] = '\0';
@@ -138,7 +138,7 @@ int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, soc
 
     send(clntSd, CALCULATOR_MENU, strlen(CALCULATOR_MENU), 0);
 
-    readLen = recv(clntSd, rBuff, sizeof(rBuff) - 1, 0);
+    readLen = recv(clntSd, rBuff, BUFSIZ - 1, 0);
     if (readLen == 0)
         return BREAK;
     rBuff[readLen] = '\0';
