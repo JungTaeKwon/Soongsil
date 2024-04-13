@@ -14,5 +14,9 @@
 #define MENU "\n\n        MENU        \n**********************\n* 1. Current time (1)*\n* 2. Calculator   (2)*\n* 3. Quit         (q)*\n* 4. ECHO  {ANY_TEXT}*\n**********************\n"
 #define CALCULATOR_MENU "ADD[+], SUB[-], MUL[*], DIV[/]"
 #define CALCULATION_ENTER "[*]Please enter a calculation formula"
+#define sockaddr_in struct sockaddr_in
 
 #define float32_t float
+
+#define CONTINUE 1
+#define BREAK 0

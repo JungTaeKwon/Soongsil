@@ -1,12 +1,13 @@
 #include "20192944_server.h"
 
-void errProc(const char *str);
-void errPrint(const char *str);
+void errProc(const char *);
+void errPrint(const char *);
+int32_t calculate(int32_t, int32_t, char *, char *, sockaddr_in);
 
 int main(int argc, char **argv)
 {
     int srvSd, clntSd;
-    struct sockaddr_in srvAddr, clntAddr;
+    sockaddr_in srvAddr, clntAddr;
     int clntAddrLen, readLen, strLen;
 
     pid_t pid;
@@ -54,6 +55,7 @@ int main(int argc, char **argv)
                 send(clntSd, MENU, strlen(MENU), 0);
                 char rBuff[BUFSIZ];
                 char wBuff[BUFSIZ];
+
                 readLen = recv(clntSd, rBuff, sizeof(rBuff) - 1, 0);
                 if (readLen == 0)
                     break;
@@ -63,71 +65,33 @@ int main(int argc, char **argv)
 
                 if (strcmp(rBuff, "1") == 0)
                 {
+                    // Case[1]: Time info
                     time_t timer;
                     time(&timer);
                     send(clntSd, ctime(&timer), strlen(ctime(&timer)), 0);
                 }
                 else if (strcmp(rBuff, "2") == 0)
                 {
-                    float32_t a, b, result;
-                    char operator;
-
-                    send(clntSd, CALCULATOR_MENU, strlen(CALCULATOR_MENU), 0);
-
-                    readLen = recv(clntSd, rBuff, sizeof(rBuff) - 1, 0);
-                    if (readLen == 0)
-                        break;
-                    rBuff[readLen] = '\0';
-                    printf("[*] Client(%d): %s\n",
-                           ntohs(clntAddr.sin_port), rBuff);
-
-                    sscanf(rBuff, "%f %c %f", &a, &operator, & b);
-                    switch (operator)
+                    // Case[2]: Calculator
+                    if (calculate(clntSd, readLen, rBuff, wBuff, clntAddr))
                     {
-                    case '+':
-                        result = a + b;
-                        break;
-                    case '-':
-                        result = a - b;
-                        break;
-                    case '*':
-                        result = a * b;
-                        break;
-                    case '/':
-                        if (a == 0 || b == 0)
-                        {
-                            strcpy(rBuff, "[Error: Division by zero]");
-                            if (write(clntSd, rBuff, strlen(rBuff)) < 0)
-                            {
-                                perror("[Error writing to socket]");
-                            }
-                            continue;
-                        }
-                        else
-                        {
-                            result = a / b;
-                        }
-                        break;
-                    default:
-                        strcpy(wBuff, "[Error: Invalid operator]");
-                        if (write(clntSd, wBuff, strlen(wBuff)))
-                        {
-                            perror("[Error writing to socket]");
-                        }
                         continue;
                     }
-                    sprintf(wBuff, "[ %.2f %c %.2f = %.2f ]", a, operator, b, result);
-
-                    send(clntSd, wBuff, strlen(wBuff), 0);
+                    else
+                    {
+                        break;
+                    }
                 }
                 else if (strcmp(rBuff, "q") == 0)
                 {
+                    // Case[q]: QUIT
                     memcpy(wBuff, rBuff, strlen(rBuff));
                     send(clntSd, wBuff, strlen(rBuff), 0);
                     break;
                 }
                 else
                 {
+                    // CaseE{ANY_TEXT}: ECHO
                     memcpy(wBuff, rBuff, strlen(rBuff));
                     wBuff[strlen(rBuff)] = '\0';
                     send(clntSd, wBuff, strlen(wBuff), 0);
@@ -165,4 +129,58 @@ void sigintHandler(int signum)
 {
     printf("\n[*] Received SIGINT. Exiting gracefully...\n");
     exit(0);
+}
+
+int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, sockaddr_in clntAddr)
+{
+    float32_t a, b, result;
+    char operator;
+
+    send(clntSd, CALCULATOR_MENU, strlen(CALCULATOR_MENU), 0);
+
+    readLen = recv(clntSd, rBuff, sizeof(rBuff) - 1, 0);
+    if (readLen == 0)
+        return BREAK;
+    rBuff[readLen] = '\0';
+    printf("[*] Client(%d): %s\n",
+           ntohs(clntAddr.sin_port), rBuff);
+
+    sscanf(rBuff, "%f %c %f", &a, &operator, & b);
+    switch (operator)
+    {
+    case '+':
+        result = a + b;
+        break;
+    case '-':
+        result = a - b;
+        break;
+    case '*':
+        result = a * b;
+        break;
+    case '/':
+        if (a == 0 || b == 0)
+        {
+            strcpy(rBuff, "[Error: Division by zero]");
+            if (write(clntSd, rBuff, strlen(rBuff)) < 0)
+            {
+                perror("[Error writing to socket]");
+            }
+            return CONTINUE;
+        }
+        else
+        {
+            result = a / b;
+        }
+        break;
+    default:
+        strcpy(wBuff, "[Error: Invalid operator]");
+        if (write(clntSd, wBuff, strlen(wBuff)))
+        {
+            perror("[Error writing to socket]");
+        }
+        return CONTINUE;
+    }
+    sprintf(wBuff, "[ %.2f %c %.2f = %.2f ]", a, operator, b, result);
+
+    send(clntSd, wBuff, strlen(wBuff), 0);
 }
