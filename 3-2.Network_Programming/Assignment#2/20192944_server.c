@@ -125,12 +125,6 @@ void errPrint(const char *str)
     fprintf(stderr, "%s: %s \n", str, strerror(errno));
 }
 
-void sigintHandler(int signum)
-{
-    printf("\n[*] Received SIGINT. Exiting gracefully...\n");
-    exit(0);
-}
-
 int32_t calculate(int32_t clntSd, int32_t readLen, char *rBuff, char *wBuff, sockaddr_in clntAddr)
 {
     float32_t a, b, result;
