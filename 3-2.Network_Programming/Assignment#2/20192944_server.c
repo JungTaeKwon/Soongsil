@@ -106,7 +106,7 @@ int main(int argc, char **argv)
             errProc("fork");
         else
         { // Parent process
-            wait(NULL);
+            // wait(NULL);
             close(clntSd);
         }
     }
