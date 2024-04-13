@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     signal(SIGINT, sigintHandler);
 
     // USAGE
-    if (argc != 3)
+    if (argc != VALID_ARGC)
     {
         printf("[*] Usage: %s [IP ADDR] [Port]\n", argv[0]);
     }
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     recv(clntSd, rBuff, BUFSIZ, 0);
     printf("%s\n", rBuff);
 
-    while (1)
+    while (CONTINUE_UNTIL_QUIT)
     {
         // Init signal handler
         signal(SIGINT, sigintHandler);

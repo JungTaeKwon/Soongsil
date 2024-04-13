@@ -9,4 +9,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#define _XOPEN_SOURCE 200
+
+#define CONTINUE_UNTIL_QUIT 1
+#define VALID_ARGC 3
