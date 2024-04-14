@@ -24,3 +24,64 @@ int fork_exec()
     }
     return 0;
 }
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <ctype.h>
+
+int ipc_prac()
+{
+    int pipefd[2];
+    pid_t pid;
+    char buffer[100];
+
+    if (pipe(pipefd) == -1)
+    {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+
+    pid = fork();
+
+    if (pid == -1)
+    {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0)
+    {
+        printf("[*] Child process..\n");
+        close(pipefd[0]);
+
+        printf("[*] INPUT: ");
+        fgets(buffer, sizeof(buffer), stdin);
+        write(pipefd[1], buffer, sizeof(buffer));
+
+        close(pipefd[1]);
+        printf("[*] End of child process");
+    }
+    else
+    {
+        printf("[*] Parent process..\n");
+
+        close(pipefd[1]);
+
+        read(pipefd[0], buffer, sizeof(buffer));
+        close(pipefd[0]);
+
+        for (int i = 0; buffer[i]; i++)
+        {
+            buffer[i] = toupper(buffer[i]);
+        }
+
+        printf("[*] Returned string from child process: %s\n", buffer);
+        wait(NULL);
+        printf("[*] End of parent process");
+    }
+
+    return 0;
+}

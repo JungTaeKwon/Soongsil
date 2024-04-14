@@ -7,6 +7,7 @@
 void print_minios(char *str);
 void student_info();
 extern int fork_exec();
+extern int ipc_prac();
 
 int main()
 {
@@ -31,6 +32,11 @@ int main()
         if (strcmp(input, "fork_exec") == 0)
         {
             fork_exec();
+            continue;
+        }
+        if (strcmp(input, "ipc_prac") == 0)
+        {
+            ipc_prac();
             continue;
         }
         // 입력받은 커맨드 실행
