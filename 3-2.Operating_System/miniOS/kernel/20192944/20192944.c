@@ -62,7 +62,7 @@ int ipc_prac()
         write(pipefd[1], buffer, sizeof(buffer));
 
         close(pipefd[1]);
-        printf("[*] End of child process");
+        printf("[*] End of child process...\n");
     }
     else
     {
@@ -78,9 +78,8 @@ int ipc_prac()
             buffer[i] = toupper(buffer[i]);
         }
 
-        printf("[*] Returned string from child process: %s\n", buffer);
-        wait(NULL);
-        printf("[*] End of parent process");
+        printf("\n[*] Returned string from child process: %s\n", buffer);
+        printf("[*] End of parent process...\n");
     }
 
     return 0;
