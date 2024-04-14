@@ -9,15 +9,16 @@ int fork_exec()
         fprintf(stderr, "[*] Fork failed..\n");
     }
 
-    if (pid > 0)
+    if (pid == 0)
     {
-        printf("[*] This is parent process..\n");
+        printf("[*] This is child process\n");
         printf("[*] Exit in 5 seconds..\n");
         sleep(5);
     }
     else
     {
-        printf("[*] This is child process\n");
+        printf("[*] This is parent process..\n");
+        wait(NULL);
         printf("[*] Exit in 5 seconds..\n");
         sleep(5);
     }
