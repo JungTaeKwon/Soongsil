@@ -84,3 +84,43 @@ int ipc_prac()
 
     return 0;
 }
+
+void *monte_carlo(void *arg)
+{
+    srand(time(NULL));
+    int points_to_generate = TOTAL_POINTS / NUM_THREADS;
+    int i;
+    for (i = 0; i < points_to_generate; i++)
+    {
+        double x = (double)rand() / (double)RAND_MAX;
+        double y = (double)rand() / (double)RAND_MAX;
+        if (sqrt(x * x + y * y) <= 1.0)
+        {
+            pthread_mutex_lock(&mutex);
+            points_in_circle++;
+            pthread_mutex_unlock(&mutex);
+        }
+    }
+    pthread_exit(NULL);
+}
+
+int estimate_pi()
+{
+    pthread_t threads[NUM_THREADS];
+    int t;
+    for (t = 0; t < NUM_THREADS; t++)
+    {
+        pthread_create(&threads[t], NULL, monte_carlo, NULL);
+    }
+
+    for (t = 0; t < NUM_THREADS; t++)
+    {
+        pthread_join(threads[t], NULL);
+    }
+
+    double pi_estimate = 4.0 * points_in_circle / (double)TOTAL_POINTS;
+    printf("[*] Estimated pi: %f\n", pi_estimate);
+
+    points_in_circle = 0;
+    return 0;
+}

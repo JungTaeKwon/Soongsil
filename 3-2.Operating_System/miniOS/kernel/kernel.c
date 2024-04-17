@@ -8,7 +8,7 @@ void print_minios(char *str);
 void student_info();
 extern int fork_exec();
 extern int ipc_prac();
-
+extern int estimate_pi();
 int main()
 {
     print_minios("[MiniOS SSU] Hello, World!");
@@ -37,6 +37,11 @@ int main()
         if (strcmp(input, "ipc_prac") == 0)
         {
             ipc_prac();
+            continue;
+        }
+        if (strcmp(input, "estimate_pi") == 0)
+        {
+            estimate_pi();
             continue;
         }
         // 입력받은 커맨드 실행

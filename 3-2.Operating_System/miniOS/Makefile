@@ -9,7 +9,7 @@ HEADERS = $(wildcard $(SRCDIR)/*.h) $(wildcard $(SRCDIR)/20192944/*.h)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) -lreadline
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) -lreadline -lm
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
