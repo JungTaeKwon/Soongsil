@@ -13,6 +13,9 @@ $(OBJS): $(SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $(SRCS)
 
 run:
+	sudo ifconfig wlan0 down
+	sudo iwconfig wlan0 mode monitor
+	sudo ifconfig wlan0 up
 	sudo ./$(TARGET)
 
 clean:
