@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    char dev[] = "wlan0";
+    char dev[] = WIRELESS_INTERFACE;
     char errbuf[PCAP_ERRBUF_SIZE];
 
     pcap_t *handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    while (true)
+    while (PKT_CAPTURING)
     {
         struct pcap_pkthdr *header;
         const u_char *packet;
