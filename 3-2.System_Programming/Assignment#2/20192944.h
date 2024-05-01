@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <elf.h>
 
+#define FIND_STR "software"
+
 bool is_elf(Elf64_Ehdr eh);
 void read_elf_header(int32_t fd, Elf64_Ehdr *elf_header);
 void print_elf_header(Elf64_Ehdr elf_header);
@@ -246,12 +248,12 @@ void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
 			char *rodata_content = read_section(fd, sh_table[i]);
 
 			// "software" 문자열 찾고, 주소값 반환
-			char *found = find_str("software", rodata_content, sh_table[i].sh_size);
+			char *found = find_str(FIND_STR, rodata_content, sh_table[i].sh_size);
 
 			if (found)
 			{
 				off_t offset = sh_table[i].sh_offset + (found - rodata_content); // 오프셋 계산
-				printf("[*] Found 'software' at offset %ld\n", offset);
+				printf("[*] Found '%s' at offset %ld\n", FIND_STR, offset);
 
 				// "software"를 "hackers!"로 변경
 				const char *HACKERS = "hackers!";
@@ -279,11 +281,11 @@ void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
 					perror("pwrite failed");
 					exit(EXIT_FAILURE);
 				}
-				printf("[*] Modify 'software' to 'hackers!'\n");
+				printf("[*] Modify '%s' to 'hackers!'\n", FIND_STR);
 			}
 			else
 			{
-				printf("No 'software' found in this section.\n");
+				printf("No '%s' found in this section.\n", FIND_STR);
 			}
 			// Deallocate memory
 			free(rodata_content);
