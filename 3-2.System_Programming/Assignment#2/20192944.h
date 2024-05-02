@@ -223,6 +223,8 @@ void print_section_headers(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
 			printf("%s section info\n", (sh_str + sh_table[i].sh_name));
 			printf("    file offset = 0x%08lx\n", sh_table[i].sh_offset);
 			printf("           size = 0x%08lx\n", sh_table[i].sh_size);
+
+			modify_rodata(fd, eh, sh_table);
 		}
 	}
 }

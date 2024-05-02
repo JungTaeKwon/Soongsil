@@ -6,7 +6,7 @@ int32_t main(int32_t argc, char *argv[])
 
 	if (argc != 2)
 	{
-		printf("Usage: editro <file>\n");
+		printf("Usage: ./20192944 <file>\n");
 		return 0;
 	}
 
@@ -35,8 +35,6 @@ int32_t main(int32_t argc, char *argv[])
 		printf("Failed to allocate %d bytes\n", (ehdr.e_shentsize * ehdr.e_shnum));
 	}
 	print_section_headers(fd, ehdr, sh_tbl);
-
-	modify_rodata(fd, ehdr, sh_tbl);
 
 	return 0;
 }

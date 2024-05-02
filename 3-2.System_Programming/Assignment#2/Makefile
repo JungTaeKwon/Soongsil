@@ -14,7 +14,7 @@ $(OBJS): $(SRCS) $(HEADERS)
 
 
 run:
-	./$(TARGET)
+	./$(TARGET) ./test
 
 clean:
 	rm -f $(OBJS) $(TARGET)
