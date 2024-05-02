@@ -267,7 +267,7 @@ void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
 					exit(EXIT_FAILURE);
 				}
 
-				// STDOUT
+				// write on file descriptor(binary file)
 				ssize_t bytes_written = write(fd, HACKERS, sizeof(HACKERS));
 
 				// 예외처리
