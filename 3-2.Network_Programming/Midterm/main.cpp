@@ -1,3 +1,4 @@
+// Copyright by oxdjww
 #include "main.h"
 
 int main(int argc, char *argv[])
