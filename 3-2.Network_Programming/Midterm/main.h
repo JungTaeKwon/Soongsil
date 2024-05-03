@@ -5,6 +5,7 @@
 #include "beaconheader.h"
 #include "wirelessheader.h"
 
+// CONST
 #define PKT_CAPTURING true
 #define WIRELESS_INTERFACE "wlan0"
 
