@@ -224,75 +224,57 @@ void print_section_headers(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
 			printf("    file offset = 0x%08lx\n", sh_table[i].sh_offset);
 			printf("           size = 0x%08lx\n", sh_table[i].sh_size);
 
-			modify_rodata(fd, eh, sh_table);
+			modify_rodata(fd, eh, sh_table[i]);
 		}
 	}
 }
 
-void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table[])
+void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table)
 {
-	uint32_t i;
-	char *sh_str;
+	char *rodata_content = read_section(fd, sh_table);
 
-	assert(lseek(fd, (off_t)eh.e_shoff, SEEK_SET) == (off_t)eh.e_shoff);
+	// "software" 문자열 찾고, 주소값 반환
+	char *found = find_str(FIND_STR, rodata_content, sh_table.sh_size);
 
-	for (i = 0; i < eh.e_shnum; i++)
+	if (found)
 	{
-		assert(read(fd, (void *)&sh_table[i], eh.e_shentsize) == eh.e_shentsize);
-	}
+		off_t offset = sh_table.sh_offset + (found - rodata_content); // 오프셋 계산
+		printf("[*] Found '%s' at offset %ld\n", FIND_STR, offset);
 
-	/* section-header string-table */
-	sh_str = read_section(fd, sh_table[eh.e_shstrndx]);
-	for (i = 0; i < eh.e_shnum; i++)
-	{
-		if (!strncmp((sh_str + sh_table[i].sh_name), ".rodata", 7))
+		// "software"를 "hackers!"로 변경
+		const char *HACKERS = "hackers!";
+
+		// 오프셋만큼 이동
+		if (lseek(fd, offset, SEEK_SET) == -1)
 		{
-			char *rodata_content = read_section(fd, sh_table[i]);
-
-			// "software" 문자열 찾고, 주소값 반환
-			char *found = find_str(FIND_STR, rodata_content, sh_table[i].sh_size);
-
-			if (found)
-			{
-				off_t offset = sh_table[i].sh_offset + (found - rodata_content); // 오프셋 계산
-				printf("[*] Found '%s' at offset %ld\n", FIND_STR, offset);
-
-				// "software"를 "hackers!"로 변경
-				const char *HACKERS = "hackers!";
-
-				// 오프셋만큼 이동
-				if (lseek(fd, offset, SEEK_SET) == -1)
-				{
-					perror("lseek failed");
-					exit(EXIT_FAILURE);
-				}
-
-				// write on file descriptor(binary file)
-				ssize_t bytes_written = write(fd, HACKERS, sizeof(HACKERS));
-
-				// 예외처리
-				if (bytes_written == -1)
-				{
-					perror("write failed");
-					exit(EXIT_FAILURE);
-				}
-
-				// 예외처리
-				if (bytes_written == -1)
-				{
-					perror("pwrite failed");
-					exit(EXIT_FAILURE);
-				}
-				printf("[*] Modify '%s' to 'hackers!'\n", FIND_STR);
-			}
-			else
-			{
-				printf("No '%s' found in this section.\n", FIND_STR);
-			}
-			// Deallocate memory
-			free(rodata_content);
+			perror("lseek failed");
+			exit(EXIT_FAILURE);
 		}
+
+		// write on file descriptor(binary file)
+		ssize_t bytes_written = write(fd, HACKERS, sizeof(HACKERS));
+
+		// 예외처리
+		if (bytes_written == -1)
+		{
+			perror("write failed");
+			exit(EXIT_FAILURE);
+		}
+
+		// 예외처리
+		if (bytes_written == -1)
+		{
+			perror("pwrite failed");
+			exit(EXIT_FAILURE);
+		}
+		printf("[*] Modify '%s' to 'hackers!'\n", FIND_STR);
 	}
+	else
+	{
+		printf("No '%s' found in this section.\n", FIND_STR);
+	}
+	// Deallocate memory
+	free(rodata_content);
 }
 
 char *find_str(const char *target_str, const char *data, size_t size)
