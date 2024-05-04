@@ -247,7 +247,7 @@ void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table)
 		// 오프셋만큼 이동
 		if (lseek(fd, offset, SEEK_SET) == -1)
 		{
-			perror("lseek failed");
+			perror("[*] lseek failed");
 			exit(EXIT_FAILURE);
 		}
 
@@ -257,21 +257,21 @@ void modify_rodata(int32_t fd, Elf64_Ehdr eh, Elf64_Shdr sh_table)
 		// 예외처리
 		if (bytes_written == -1)
 		{
-			perror("write failed");
+			perror("[*] write failed");
 			exit(EXIT_FAILURE);
 		}
 
 		// 예외처리
 		if (bytes_written == -1)
 		{
-			perror("pwrite failed");
+			perror("[*] pwrite failed");
 			exit(EXIT_FAILURE);
 		}
 		printf("[*] Modify '%s' to 'hackers!'\n", FIND_STR);
 	}
 	else
 	{
-		printf("No '%s' found in this section.\n", FIND_STR);
+		printf("[*] No '%s' found in this section.\n", FIND_STR);
 	}
 	// Deallocate memory
 	free(rodata_content);
