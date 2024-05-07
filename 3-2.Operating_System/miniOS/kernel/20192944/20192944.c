@@ -124,3 +124,48 @@ int estimate_pi()
     points_in_circle = 0;
     return 0;
 }
+
+void round_robin()
+{
+    struct Process processes[MAX_PROCESSES];
+    int num_processes;
+    int time_quantum;
+
+    printf("[*] Enter the number of processes: ");
+    scanf("%d", &num_processes);
+
+    printf("[*] Enter the time quantum: ");
+    scanf("%d", &time_quantum);
+
+    printf("[*] Enter burst times for each process:\n");
+    for (int i = 0; i < num_processes; i++)
+    {
+        printf("[*] Process %d: ", i + 1);
+        scanf("%d", &processes[i].burst_time);
+        processes[i].id = i + 1;
+        processes[i].remaining_time = processes[i].burst_time;
+    }
+
+    int completed_processes = 0;
+    int current_process = 0;
+
+    while (completed_processes < num_processes)
+    {
+        if (processes[current_process].remaining_time > 0)
+        {
+            printf("[*] Running Process %d\n", processes[current_process].id);
+            if (processes[current_process].remaining_time <= time_quantum)
+            {
+                printf("[*] Process %d completed\n", processes[current_process].id);
+                completed_processes++;
+                processes[current_process].remaining_time = 0;
+            }
+            else
+            {
+                processes[current_process].remaining_time -= time_quantum;
+            }
+        }
+        current_process = (current_process + 1) % num_processes;
+    }
+    return;
+}

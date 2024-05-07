@@ -12,3 +12,12 @@
 
 int points_in_circle = 0;
 pthread_mutex_t mutex;
+
+#define MAX_PROCESSES 10
+
+struct Process
+{
+    int id;
+    int burst_time;
+    int remaining_time;
+};

@@ -44,6 +44,11 @@ int main()
             estimate_pi();
             continue;
         }
+        if (strcmp(input, "round_robin") == 0)
+        {
+            round_robin();
+            continue;
+        }
         // 입력받은 커맨드 실행
         system(input);
     }
