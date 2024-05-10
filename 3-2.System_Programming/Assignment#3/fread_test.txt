@@ -1,0 +1,3 @@
+test for fread1
+test for fread2
+test for fread3
