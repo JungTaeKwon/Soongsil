@@ -69,20 +69,20 @@ FILE *fopen(const char *pathname, const char *mode)
     return fp;
 }
 
-size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
+int fread(void *ptr, int size, int nmemb, FILE *stream)
 {
     if (stream == NULL || ptr == NULL)
     {
         return 0;
     }
 
-    size_t totalBytesToRead = size * nmemb;
-    size_t bytesRead = 0;
+    int totalBytesToRead = size * nmemb;
+    int bytesRead = 0;
     char *buffPtr = (char *)ptr;
 
     while (bytesRead < totalBytesToRead)
     {
-        ssize_t result = read(stream->fd, buffPtr + bytesRead, totalBytesToRead - bytesRead);
+        int result = read(stream->fd, buffPtr + bytesRead, totalBytesToRead - bytesRead);
         if (result < 0)
         {
             stream->eof = 1;
@@ -102,20 +102,20 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
     return bytesRead / size;
 }
 
-size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
 {
     if (stream == NULL || ptr == NULL)
     {
         return 0;
     }
 
-    size_t totalBytesToWrite = size * nmemb;
-    size_t bytesWritten = 0;
+    int totalBytesToWrite = size * nmemb;
+    int bytesWritten = 0;
     const char *buffPtr = (const char *)ptr;
 
     while (bytesWritten < totalBytesToWrite)
     {
-        ssize_t result = write(stream->fd, buffPtr + bytesWritten, totalBytesToWrite - bytesWritten);
+        int result = write(stream->fd, buffPtr + bytesWritten, totalBytesToWrite - bytesWritten);
         if (result < 0)
         {
             break;
