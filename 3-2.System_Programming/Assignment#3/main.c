@@ -18,16 +18,16 @@ int main()
 
 void fopen_test()
 {
-    // my_fopen test
-    write(stdout, "[*] MY_FOPEN_TEST\n", strlen("[*] MY_FOPEN_TEST\n"));
-    FILE *fp = my_fopen("fopen_test.txt", "r+");
+    // fopen test
+    write(stdout, "[*] FOPEN_TEST\n", strlen("[*] FOPEN_TEST\n"));
+    FILE *fp = fopen("fopen_test.txt", "r+");
     if (fp == NULL)
     {
-        write(stderr, "my_fopen fail\n", 14);
+        write(stderr, "fopen fail\n", 14);
     }
     else
     {
-        write(stdout, "my_fopen success\n", strlen("my_fopen success\n"));
+        write(stdout, "fopen success\n", strlen("fopen success\n"));
     }
 
     write(stdout, "\n\n", 2);
@@ -36,20 +36,20 @@ void fopen_test()
 
 void fread_test()
 {
-    write(stdout, "[*] MY_FREAD_TEST\n", strlen("[*] MY_FREAD_TEST\n"));
-    FILE *fp = my_fopen("fread_test.txt", "r+");
-    // my_fread test
+    write(stdout, "[*] FREAD_TEST\n", strlen("[*] FREAD_TEST\n"));
+    FILE *fp = fopen("fread_test.txt", "r+");
+    // fread test
     char readBuffer[1024];
 
-    size_t readCount = my_fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    size_t readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stdout, "my_fread fail\n", 14);
+        write(stdout, "fread fail\n", 14);
     }
     else
     {
         readBuffer[readCount] = '\0';
-        write(stdout, "my_fread success\n", 17);
+        write(stdout, "fread success\n", 17);
         write(stdout, readBuffer, readCount);
     }
 
@@ -59,18 +59,18 @@ void fread_test()
 
 void fwrite_test()
 {
-    // my_fwrite test
-    write(stdout, "[*] MY_FWRITE_TEST\n", strlen("[*] MY_FWRITE_TEST\n"));
-    FILE *fp = my_fopen("fwrite_test.txt", "r+");
+    // fwrite test
+    write(stdout, "[*] FWRITE_TEST\n", strlen("[*] FWRITE_TEST\n"));
+    FILE *fp = fopen("fwrite_test.txt", "r+");
     char readBuffer[1024];
     const char *writeBuffer = "changed text\n";
     int readCount = 0;
 
-    write(stdout, "[*] Before my_fwrite()\n", strlen("[*] Before my_fwrite()\n"));
-    readCount = my_fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    write(stdout, "[*] Before fwrite()\n", strlen("[*] Before fwrite()\n"));
+    readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stderr, "my_fread fail\n", strlen("my_fread fail\n"));
+        write(stderr, "fread fail\n", strlen("fread fail\n"));
     }
     else
     {
@@ -78,18 +78,18 @@ void fwrite_test()
         write(stdout, readBuffer, readCount);
     }
 
-    size_t writeCount = my_fwrite(writeBuffer, sizeof(char), strlen(writeBuffer), fp);
+    size_t writeCount = fwrite(writeBuffer, sizeof(char), strlen(writeBuffer), fp);
     if (writeCount == 0)
     {
-        write(stderr, "my_fwrite fail\n", strlen("my_fwrite fail\n"));
+        write(stderr, "fwrite fail\n", strlen("fwrite fail\n"));
     }
 
-    write(stdout, "[*] After my_fwrite()\n", strlen("[*] After my_fwrite()\n"));
-    fp = my_fopen("fwrite_test.txt", "r+");
-    readCount = my_fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    write(stdout, "[*] After fwrite()\n", strlen("[*] After fwrite()\n"));
+    fp = fopen("fwrite_test.txt", "r+");
+    readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stderr, "my_fread fail\n", strlen("my_fread fail\n"));
+        write(stderr, "fread fail\n", strlen("fread fail\n"));
     }
     else
     {
