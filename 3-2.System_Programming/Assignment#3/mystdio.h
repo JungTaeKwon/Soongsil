@@ -24,9 +24,9 @@ typedef struct myFile
     char lastop;
     int eof;
     char *buffer;
-} MYFILE;
+} FILE;
 
-MYFILE *my_fopen(const char *pathname, const char *mode)
+FILE *my_fopen(const char *pathname, const char *mode)
 {
     int flags;
     if (strcmp(mode, "r") == 0)
@@ -64,12 +64,12 @@ MYFILE *my_fopen(const char *pathname, const char *mode)
         return NULL;
     }
 
-    MYFILE *fp = (MYFILE *)malloc(sizeof(MYFILE));
+    FILE *fp = (FILE *)malloc(sizeof(FILE));
     fp->fd = fd;
     return fp;
 }
 
-size_t my_fread(void *ptr, size_t size, size_t nmemb, MYFILE *stream)
+size_t my_fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     if (stream == NULL || ptr == NULL)
     {
@@ -102,7 +102,7 @@ size_t my_fread(void *ptr, size_t size, size_t nmemb, MYFILE *stream)
     return bytesRead / size;
 }
 
-size_t my_fwrite(const void *ptr, size_t size, size_t nmemb, MYFILE *stream)
+size_t my_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     if (stream == NULL || ptr == NULL)
     {

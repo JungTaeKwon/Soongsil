@@ -24,6 +24,7 @@
         "new": "c",
         "stdexcept": "c",
         "string": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "unistd.h": "c"
     }
 }

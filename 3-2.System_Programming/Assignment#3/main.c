@@ -20,7 +20,7 @@ void fopen_test()
 {
     // my_fopen test
     write(stdout, "[*] MY_FOPEN_TEST\n", strlen("[*] MY_FOPEN_TEST\n"));
-    MYFILE *fp = my_fopen("fopen_test.txt", "r+");
+    FILE *fp = my_fopen("fopen_test.txt", "r+");
     if (fp == NULL)
     {
         write(stderr, "my_fopen fail\n", 14);
@@ -37,7 +37,7 @@ void fopen_test()
 void fread_test()
 {
     write(stdout, "[*] MY_FREAD_TEST\n", strlen("[*] MY_FREAD_TEST\n"));
-    MYFILE *fp = my_fopen("fread_test.txt", "r+");
+    FILE *fp = my_fopen("fread_test.txt", "r+");
     // my_fread test
     char readBuffer[1024];
 
@@ -61,7 +61,7 @@ void fwrite_test()
 {
     // my_fwrite test
     write(stdout, "[*] MY_FWRITE_TEST\n", strlen("[*] MY_FWRITE_TEST\n"));
-    MYFILE *fp = my_fopen("fwrite_test.txt", "r+");
+    FILE *fp = my_fopen("fwrite_test.txt", "r+");
     char readBuffer[1024];
     const char *writeBuffer = "changed text\n";
     int readCount = 0;
