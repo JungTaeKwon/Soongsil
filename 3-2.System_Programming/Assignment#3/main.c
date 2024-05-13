@@ -63,7 +63,7 @@ void fwrite_test()
     write(stdout, "[*] MY_FWRITE_TEST\n", strlen("[*] MY_FWRITE_TEST\n"));
     MYFILE *fp = my_fopen("fwrite_test.txt", "r+");
     char readBuffer[1024];
-    char writeBuffer[1024];
+    const char *writeBuffer = "changed text\n";
     int readCount = 0;
 
     write(stdout, "[*] Before my_fwrite()\n", strlen("[*] Before my_fwrite()\n"));
@@ -75,7 +75,6 @@ void fwrite_test()
     else
     {
         readBuffer[readCount] = '\0';
-        write(stdout, "my_fread success\n", strlen("my_fread success\n"));
         write(stdout, readBuffer, readCount);
     }
 
@@ -83,10 +82,6 @@ void fwrite_test()
     if (writeCount == 0)
     {
         write(stderr, "my_fwrite fail\n", strlen("my_fwrite fail\n"));
-    }
-    else
-    {
-        write(stdout, "my_fwrite success\n", strlen("my_fwrite success\n"));
     }
 
     write(stdout, "[*] After my_fwrite()\n", strlen("[*] After my_fwrite()\n"));
@@ -99,7 +94,6 @@ void fwrite_test()
     else
     {
         readBuffer[readCount] = '\0';
-        write(stdout, "my_fread success\n", strlen("my_fread success\n"));
         write(stdout, readBuffer, readCount);
     }
 

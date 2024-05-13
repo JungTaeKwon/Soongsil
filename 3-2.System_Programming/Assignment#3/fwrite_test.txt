@@ -1,6 +1,3 @@
-test for frwite1
-test for frwite2
-test for frwite3
-test for fread1
-test for fread2
-test for fread3
+changed text
+changed text
+changed text

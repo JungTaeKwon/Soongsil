@@ -1,4 +1,4 @@
 my_fread fail
-1
-test for fopen2
-test for fopen3
+my_fwrite fail
+my_fread fail
+pen3

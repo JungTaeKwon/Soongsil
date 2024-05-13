@@ -96,7 +96,6 @@ size_t my_fread(void *ptr, size_t size, size_t nmemb, MYFILE *stream)
         else
         {
             bytesRead += result;
-            write(STDOUT_FILENO, buffPtr + bytesRead - result, result);
         }
     }
 
