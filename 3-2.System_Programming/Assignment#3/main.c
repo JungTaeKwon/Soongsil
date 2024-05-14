@@ -128,7 +128,7 @@ void fseek_test()
     }
 
     // Test SEEK_SET
-    fseek(fp->fd, 10, SEEK_SET);
+    fseek(fp, 10, SEEK_SET);
     size_t readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
@@ -143,7 +143,7 @@ void fseek_test()
     }
 
     // Test SEEK_CUR
-    fseek(fp->fd, -10, SEEK_CUR);
+    fseek(fp, -10, SEEK_CUR);
     readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
@@ -158,7 +158,7 @@ void fseek_test()
     }
 
     // Test SEEK_END
-    fseek(fp->fd, -5, SEEK_END);
+    fseek(fp, -5, SEEK_END);
     readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {

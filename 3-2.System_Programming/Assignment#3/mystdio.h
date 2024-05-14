@@ -136,8 +136,9 @@ int fflush(FILE *stream)
     return 0;
 }
 
-int fseek(int fd, off_t offset, int whence)
+int fseek(FILE *stream, off_t offset, int whence)
 {
+    int fd = stream->fd;
     off_t new_pos;
     off_t current_pos;
 
