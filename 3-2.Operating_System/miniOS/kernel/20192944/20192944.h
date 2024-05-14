@@ -6,12 +6,15 @@
 #include <pthread.h>
 #include <math.h>
 #include <time.h>
+#include <semaphore.h>
 
 #define NUM_THREADS 10
 #define TOTAL_POINTS 100000000
 
 int points_in_circle = 0;
 pthread_mutex_t mutex;
+
+sem_t semaphore;
 
 #define MAX_PROCESSES 10
 

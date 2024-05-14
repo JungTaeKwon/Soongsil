@@ -39,9 +39,14 @@ int main()
             ipc_prac();
             continue;
         }
-        if (strcmp(input, "estimate_pi") == 0)
+        if (strcmp(input, "estimate_pi_with_mutex") == 0)
         {
-            estimate_pi();
+            estimate_pi_with_mutex();
+            continue;
+        }
+        if (strcmp(input, "estimate_pi_with_semaphore") == 0)
+        {
+            estimate_pi_with_semaphore();
             continue;
         }
         if (strcmp(input, "round_robin") == 0)

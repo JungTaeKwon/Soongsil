@@ -85,7 +85,7 @@ int ipc_prac()
     return 0;
 }
 
-void *monte_carlo(void *arg)
+void *monte_carlo_with_mutex(void *arg)
 {
     srand(time(NULL));
     int points_to_generate = TOTAL_POINTS / NUM_THREADS;
@@ -104,13 +104,13 @@ void *monte_carlo(void *arg)
     pthread_exit(NULL);
 }
 
-int estimate_pi()
+int estimate_pi_with_mutex()
 {
     pthread_t threads[NUM_THREADS];
     int t;
     for (t = 0; t < NUM_THREADS; t++)
     {
-        pthread_create(&threads[t], NULL, monte_carlo, NULL);
+        pthread_create(&threads[t], NULL, monte_carlo_with_mutex, NULL);
     }
 
     for (t = 0; t < NUM_THREADS; t++)
@@ -121,6 +121,53 @@ int estimate_pi()
     double pi_estimate = 4.0 * points_in_circle / (double)TOTAL_POINTS;
     printf("[*] Estimated pi: %f\n", pi_estimate);
 
+    points_in_circle = 0;
+    return 0;
+}
+
+void *monte_carlo_with_semaphore(void *arg)
+{
+    int points_to_generate = TOTAL_POINTS / NUM_THREADS;
+    int i;
+    for (i = 0; i < points_to_generate; i++)
+    {
+        double x = (double)rand() / (double)RAND_MAX;
+        double y = (double)rand() / (double)RAND_MAX;
+        if (sqrt(x * x + y * y) <= 1.0)
+        {
+            // Sync with sem
+            sem_wait(&semaphore);
+            points_in_circle++;
+            sem_post(&semaphore);
+        }
+    }
+    pthread_exit(NULL);
+}
+
+int estimate_pi_with_semaphore()
+{
+    pthread_t threads[NUM_THREADS];
+    int t;
+
+    // Initialize semaphore
+    sem_init(&semaphore, 0, 1);
+
+    // Seperate threads
+    for (t = 0; t < NUM_THREADS; t++)
+    {
+        pthread_create(&threads[t], NULL, monte_carlo_with_semaphore, NULL);
+    }
+
+    for (t = 0; t < NUM_THREADS; t++)
+    {
+        pthread_join(threads[t], NULL);
+    }
+
+    double pi_estimate = 4.0 * points_in_circle / (double)TOTAL_POINTS;
+    printf("[*] Estimated pi: %f\n", pi_estimate);
+
+    // Destroy semaphore
+    sem_destroy(&semaphore);
     points_in_circle = 0;
     return 0;
 }
