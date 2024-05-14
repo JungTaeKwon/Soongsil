@@ -17,6 +17,14 @@ int main()
 
     fwrite_test();
 
+    fflush_test();
+
+    fseek_test();
+
+    feof_test();
+
+    fclose_test();
+
     return 0;
 }
 
@@ -27,11 +35,11 @@ void fopen_test()
     FILE *fp = fopen("fopen_test.txt", "r+");
     if (fp == NULL)
     {
-        write(stderr, "fopen fail\n", 14);
+        write(stderr, "[*] fopen fail\n", "[*] fopen fail");
     }
     else
     {
-        write(stdout, "fopen success\n", strlen("fopen success\n"));
+        write(stdout, "[*] fopen success\n", strlen("[*] fopen success\n"));
     }
 
     write(stdout, "\n\n", 2);
@@ -48,12 +56,12 @@ void fread_test()
     size_t readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stdout, "fread fail\n", 14);
+        write(stdout, "[*] fread fail\n", strlen("[*] fread fail\n"));
     }
     else
     {
         readBuffer[readCount] = '\0';
-        write(stdout, "fread success\n", 17);
+        write(stdout, "[*] fread success\n", strlen("[*] fread success\n"));
         write(stdout, readBuffer, readCount);
     }
 
@@ -74,7 +82,7 @@ void fwrite_test()
     readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stderr, "fread fail\n", strlen("fread fail\n"));
+        write(stderr, "[*] fread fail\n", strlen("[*] fread fail\n"));
     }
     else
     {
@@ -93,7 +101,7 @@ void fwrite_test()
     readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
     if (readCount == 0)
     {
-        write(stderr, "fread fail\n", strlen("fread fail\n"));
+        write(stderr, "[*] fread fail\n", strlen("[*] fread fail\n"));
     }
     else
     {
@@ -111,6 +119,60 @@ void fflush_test()
 
 void fseek_test()
 {
+    char readBuffer[1024];
+    FILE *fp = fopen("fseek_test.txt", "r+");
+    if (fp == NULL)
+    {
+        write(stderr, "[*] fopen fail\n", strlen("[*] fopen fail\n"));
+        return;
+    }
+
+    // Test SEEK_SET
+    fseek(fp->fd, 10, SEEK_SET);
+    size_t readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    if (readCount == 0)
+    {
+        write(stdout, "[*] fread fail\n", strlen("[*] fread fail\n"));
+    }
+    else
+    {
+        readBuffer[readCount] = '\0';
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+        write(stdout, readBuffer, readCount);
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+    }
+
+    // Test SEEK_CUR
+    fseek(fp->fd, -10, SEEK_CUR);
+    readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    if (readCount == 0)
+    {
+        write(stdout, "[*] fread fail\n", strlen("[*] fread fail\n"));
+    }
+    else
+    {
+        readBuffer[readCount] = '\0';
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+        write(stdout, readBuffer, readCount);
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+    }
+
+    // Test SEEK_END
+    fseek(fp->fd, -5, SEEK_END);
+    readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    if (readCount == 0)
+    {
+        write(stdout, "[*] fread fail\n", strlen("[*] fread fail\n"));
+    }
+    else
+    {
+        readBuffer[readCount] = '\0';
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+        write(stdout, readBuffer, readCount);
+        write(stdout, "----------------------------------------\n", strlen("----------------------------------------\n"));
+    }
+
+    fclose(fp);
 }
 
 void feof_test()

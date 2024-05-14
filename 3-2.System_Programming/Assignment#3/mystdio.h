@@ -136,8 +136,34 @@ int fflush(FILE *stream)
     return 0;
 }
 
-int fseek(FILE *stream, int offset, int whence)
+int fseek(int fd, off_t offset, int whence)
 {
+    off_t new_pos;
+    off_t current_pos;
+
+    switch (whence)
+    {
+    case SEEK_SET:
+        write(stdout, "[*] SEEK_SET\n", strlen("[*] SEEK_SET\n"));
+        new_pos = offset;
+        break;
+    case SEEK_CUR:
+        write(stdout, "[*] SEEK_CUR\n", strlen("[*] SEEK_CUR\n"));
+        current_pos = lseek(fd, 0, SEEK_CUR);
+        new_pos = current_pos + offset;
+        break;
+    case SEEK_END:
+        write(stdout, "[*] SEEK_END\n", strlen("[*] SEEK_END\n"));
+        current_pos = lseek(fd, 0, SEEK_END);
+        new_pos = current_pos + offset;
+        break;
+    default:
+        return -1;
+    }
+    if (lseek(fd, new_pos, SEEK_SET) == -1)
+    {
+        return -1;
+    }
     return 0;
 }
 
