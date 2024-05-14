@@ -177,8 +177,37 @@ void fseek_test()
 
 void feof_test()
 {
+    FILE *fp = fopen("feof_test.txt", "r");
+    feof(fp);
+    if (fp->eof == 0)
+    {
+        write(stdout, "[*] feof success\n", strlen("[*] feof success\n"));
+    }
+    else if (fp->eof == -1)
+    {
+        write(stdout, "[*] feof fail\n", strlen("[*] feof fail\n"));
+    }
+    else
+    {
+        write(stdout, "[*] feof success with flag\n", strlen("[*] feof success with flag\n"));
+    }
 }
 
 void fclose_test()
 {
+    FILE *fp = fopen("fclose_test.txt", "r");
+    fclose(fp);
+
+    // Use after fclose()
+    char readBuffer[1024];
+
+    size_t readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    if (readCount == 0)
+    {
+        write(stdout, "[*] fclose success\n", strlen("[*] fclose success\n"));
+    }
+    else
+    {
+        write(stdout, "[*] fclose fail\n", strlen("[*] fclose fail\n"));
+    }
 }
