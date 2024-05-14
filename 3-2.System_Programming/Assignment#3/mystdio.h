@@ -169,7 +169,7 @@ int fseek(int fd, off_t offset, int whence)
 
 int feof(FILE *stream)
 {
-    return 0;
+    return stream->eof ? -1 : 0;
 }
 
 int fclose(FILE *stream)
