@@ -31,7 +31,7 @@ int main()
 void fopen_test()
 {
     // fopen test
-    write(stdout, "[*] FOPEN_TEST\n", strlen("[*] FOPEN_TEST\n"));
+    write(stdout, "[*] 1. FOPEN_TEST\n", strlen("[*] 1. FOPEN_TEST\n"));
     FILE *fp = fopen("fopen_test.txt", "r+");
     if (fp == NULL)
     {
@@ -48,7 +48,7 @@ void fopen_test()
 
 void fread_test()
 {
-    write(stdout, "[*] FREAD_TEST\n", strlen("[*] FREAD_TEST\n"));
+    write(stdout, "[*] 2. FREAD_TEST\n", strlen("[*] 2. FREAD_TEST\n"));
     FILE *fp = fopen("fread_test.txt", "r+");
     // fread test
     char readBuffer[1024];
@@ -72,7 +72,7 @@ void fread_test()
 void fwrite_test()
 {
     // fwrite test
-    write(stdout, "[*] FWRITE_TEST\n", strlen("[*] FWRITE_TEST\n"));
+    write(stdout, "[*] 3. FWRITE_TEST\n", strlen("[*] 3. FWRITE_TEST\n"));
     FILE *fp = fopen("fwrite_test.txt", "r+");
     char readBuffer[1024];
     const char *writeBuffer = "changed text\n";
@@ -115,10 +115,12 @@ void fwrite_test()
 
 void fflush_test()
 {
+    write(stdout, "[*] 4. FFLUSH_TEST\n", strlen("[*] 4. FFLUSH_TEST\n"));
 }
 
 void fseek_test()
 {
+    write(stdout, "[*] 5. FSEEK_TEST\n", strlen("[*] 5. FSEEK_TEST\n"));
     char readBuffer[1024];
     FILE *fp = fopen("fseek_test.txt", "r+");
     if (fp == NULL)
@@ -177,6 +179,7 @@ void fseek_test()
 
 void feof_test()
 {
+    write(stdout, "[*] 6. FEOF_TEST\n", strlen("[*] 6. FEOF_TEST\n"));
     FILE *fp = fopen("feof_test.txt", "r");
     feof(fp);
     if (fp->eof == 0)
@@ -195,6 +198,7 @@ void feof_test()
 
 void fclose_test()
 {
+    write(stdout, "[*] 7. FCLOSE_TEST\n", strlen("[*] 7. FCLOSE_TEST\n"));
     FILE *fp = fopen("fclose_test.txt", "r");
     fclose(fp);
 
