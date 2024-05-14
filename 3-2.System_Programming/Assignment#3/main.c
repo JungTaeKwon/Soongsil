@@ -4,6 +4,10 @@
 void fopen_test();
 void fread_test();
 void fwrite_test();
+void fflush_test();
+void fseek_test();
+void feof_test();
+void fclose_test();
 
 int main()
 {
@@ -99,4 +103,20 @@ void fwrite_test()
 
     write(stdout, "\n\n", 2);
     return;
+}
+
+void fflush_test()
+{
+}
+
+void fseek_test()
+{
+}
+
+void feof_test()
+{
+}
+
+void fclose_test()
+{
 }

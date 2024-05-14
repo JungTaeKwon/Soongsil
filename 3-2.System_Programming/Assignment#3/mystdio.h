@@ -128,3 +128,23 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
 
     return bytesWritten / size;
 }
+
+int fflush(FILE *stream)
+{
+    return 0;
+}
+
+int fseek(FILE *stream, int offset, int whence)
+{
+    return 0;
+}
+
+int feof(FILE *stream)
+{
+    return 0;
+}
+
+int fclose(FILE *stream)
+{
+    return 0;
+}
