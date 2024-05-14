@@ -35,7 +35,7 @@ void fopen_test()
     FILE *fp = fopen("fopen_test.txt", "r+");
     if (fp == NULL)
     {
-        write(stderr, "[*] fopen fail\n", "[*] fopen fail");
+        write(stderr, "[*] fopen fail\n", strlen("[*] fopen fail\n"));
     }
     else
     {
