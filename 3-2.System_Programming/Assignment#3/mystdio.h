@@ -174,5 +174,7 @@ int feof(FILE *stream)
 
 int fclose(FILE *stream)
 {
-    return 0;
+    int result = close(stream->fd);
+    free(stream);
+    return result;
 }
