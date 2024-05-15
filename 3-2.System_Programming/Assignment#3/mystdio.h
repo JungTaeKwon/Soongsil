@@ -7,11 +7,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define BUFSIZE 1024
+#define BUFSIZE 4
 #define EOF -1
-#define stdin 1
-#define stdout 2
-#define stderr 3
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -130,7 +127,16 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
         memcpy(stream->buffer + stream->bufpos, data + bytesWritten, bytesToCopy);
         stream->bufpos += bytesToCopy;
         bytesWritten += bytesToCopy;
+
+        if (stream->bufpos == BUFSIZE)
+        {
+            if (fflush(stream) == EOF)
+            {
+                return EOF;
+            }
+        }
     }
+
     if (fflush(stream) == EOF)
     {
         return EOF;
@@ -166,16 +172,13 @@ int fseek(FILE *stream, off_t offset, int whence)
     switch (whence)
     {
     case SEEK_SET:
-        write(stdout, "[*] SEEK_SET\n", strlen("[*] SEEK_SET\n"));
         new_pos = offset;
         break;
     case SEEK_CUR:
-        write(stdout, "[*] SEEK_CUR\n", strlen("[*] SEEK_CUR\n"));
         current_pos = lseek(fd, 0, SEEK_CUR);
         new_pos = current_pos + offset;
         break;
     case SEEK_END:
-        write(stdout, "[*] SEEK_END\n", strlen("[*] SEEK_END\n"));
         current_pos = lseek(fd, 0, SEEK_END);
         new_pos = current_pos + offset;
         break;

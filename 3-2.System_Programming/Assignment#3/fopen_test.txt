@@ -1,4 +1,4 @@
-my_fread fail
-my_fwrite fail
+[*] fread fail
+y_fwrite fail
 my_fread fail
 pen3
