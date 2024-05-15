@@ -165,6 +165,7 @@ int fseek(FILE *stream, off_t offset, int whence)
     {
         return -1;
     }
+    stream->eof = 1;
     return 0;
 }
 
