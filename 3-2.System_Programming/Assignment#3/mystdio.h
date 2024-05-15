@@ -27,6 +27,14 @@ typedef struct myFile
     int buflen; // data len saved in the buffer
 } FILE;
 
+FILE *fopen(const char *pathname, const char *mode);
+int fread(void *ptr, int size, int nmemb, FILE *stream);
+int fwrite(const void *ptr, int size, int nmemb, FILE *stream);
+int fflush(FILE *stream);
+int fseek(FILE *stream, off_t offset, int whence);
+int feof(FILE *stream);
+int fclose(FILE *stream);
+
 FILE *fopen(const char *pathname, const char *mode)
 {
     int flags;
