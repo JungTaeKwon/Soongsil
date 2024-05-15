@@ -116,6 +116,22 @@ void fwrite_test()
 void fflush_test()
 {
     write(stdout, "[*] 4. FFLUSH_TEST\n", strlen("[*] 4. FFLUSH_TEST\n"));
+
+    FILE *fp = fopen("fflush_test.txt", "w");
+    if (fp == NULL)
+    {
+        write(stderr, "[*] fopen fail\n", strlen("[*] fopen fail\n"));
+        return;
+    }
+
+    const char *text = "This is a test for fflush.\n";
+    fwrite(text, sizeof(char), strlen(text), fp);
+
+    fflush(fp);
+    write(stdout, "[*] fflush called\n", strlen("[*] fflush called\n"));
+
+    fclose(fp);
+    write(stdout, "[*] File closed after fflush\n", strlen("[*] File closed after fflush\n"));
 }
 
 void fseek_test()

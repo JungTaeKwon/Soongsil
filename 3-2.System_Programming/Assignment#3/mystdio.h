@@ -26,6 +26,8 @@ typedef struct myFile
     char lastop;
     int eof;
     char *buffer;
+    int bufpos; // current position in the buffer
+    int buflen; // data len saved in the buffer
 } FILE;
 
 FILE *fopen(const char *pathname, const char *mode)
@@ -69,7 +71,9 @@ FILE *fopen(const char *pathname, const char *mode)
     FILE *fp = (FILE *)calloc(1, sizeof(FILE));
     fp->fd = fd;
 
-    fp->buffer = (char *)calloc(1, sizeof(BUFSIZE));
+    fp->buffer = (char *)calloc(1, BUFSIZE);
+    fp->bufpos = 0;
+    fp->buflen = 0;
 
     return fp;
 }
@@ -114,20 +118,25 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
         return 0;
     }
 
+    const char *data = (const char *)ptr;
     int totalBytesToWrite = size * nmemb;
     int bytesWritten = 0;
-    const char *buffPtr = (const char *)ptr;
 
     while (bytesWritten < totalBytesToWrite)
     {
-        int result = write(stream->fd, buffPtr + bytesWritten, totalBytesToWrite - bytesWritten);
-        if (result < 0)
+        int spaceInBuffer = BUFSIZE - stream->bufpos;
+        int bytesToCopy = (totalBytesToWrite - bytesWritten) < spaceInBuffer ? (totalBytesToWrite - bytesWritten) : spaceInBuffer;
+
+        memcpy(stream->buffer + stream->bufpos, data + bytesWritten, bytesToCopy);
+        stream->bufpos += bytesToCopy;
+        bytesWritten += bytesToCopy;
+
+        if (stream->bufpos == BUFSIZE)
         {
-            break;
-        }
-        else
-        {
-            bytesWritten += result;
+            if (fflush(stream) == EOF)
+            {
+                return EOF;
+            }
         }
     }
 
@@ -136,6 +145,19 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
 
 int fflush(FILE *stream)
 {
+    if (stream == NULL || stream->buffer == NULL)
+        return EOF;
+
+    if (stream->bufpos > 0)
+    {
+        int written = write(stream->fd, stream->buffer, stream->bufpos);
+        if (written < stream->bufpos)
+        {
+            return EOF;
+        }
+        stream->bufpos = 0;
+    }
+
     return 0;
 }
 
