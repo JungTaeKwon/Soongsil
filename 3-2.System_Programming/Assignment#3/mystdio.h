@@ -130,14 +130,10 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
         memcpy(stream->buffer + stream->bufpos, data + bytesWritten, bytesToCopy);
         stream->bufpos += bytesToCopy;
         bytesWritten += bytesToCopy;
-
-        if (stream->bufpos == BUFSIZE)
-        {
-            if (fflush(stream) == EOF)
-            {
-                return EOF;
-            }
-        }
+    }
+    if (fflush(stream) == EOF)
+    {
+        return EOF;
     }
 
     return bytesWritten / size;
