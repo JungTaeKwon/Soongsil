@@ -78,22 +78,22 @@ void fwrite_test()
 {
     // fwrite test
     write(STDOUT_FILENO, "[*] 3. FWRITE_TEST\n", strlen("[*] 3. FWRITE_TEST\n"));
-    FILE *fp = fopen("fwrite_test.txt", "w");
+    FILE *fp = fopen("fwrite_test.txt", "r+");
     char readBuffer[1024];
     const char *writeBuffer = "written";
     int readCount = 0;
 
-    // write(STDOUT_FILENO, "[*] Before fwrite()\n", strlen("[*] Before fwrite()\n"));
-    // readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
-    // if (readCount == 0)
-    // {
-    //     write(STDERR_FILENO, "[*] fread fail\n", strlen("[*] fread fail\n"));
-    // }
-    // else
-    // {
-    //     readBuffer[readCount] = '\0';
-    //     write(STDOUT_FILENO, readBuffer, readCount);
-    // }
+    write(STDOUT_FILENO, "[*] Before fwrite()\n", strlen("[*] Before fwrite()\n"));
+    readCount = fread(readBuffer, sizeof(char), sizeof(readBuffer) - 1, fp);
+    if (readCount == 0)
+    {
+        write(STDERR_FILENO, "[*] fread fail\n", strlen("[*] fread fail\n"));
+    }
+    else
+    {
+        readBuffer[readCount] = '\0';
+        write(STDOUT_FILENO, readBuffer, readCount);
+    }
 
     size_t writeCount = fwrite(writeBuffer, sizeof(char), strlen(writeBuffer), fp);
     if (writeCount == 0)
