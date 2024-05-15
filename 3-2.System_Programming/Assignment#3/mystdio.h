@@ -191,11 +191,11 @@ int fseek(FILE *stream, off_t offset, int whence)
         new_pos = current_pos + offset;
         break;
     default:
-        return -1;
+        return EOF;
     }
-    if (lseek(fd, new_pos, SEEK_SET) == -1)
+    if (lseek(fd, new_pos, SEEK_SET) == EOF)
     {
-        return -1;
+        return EOF;
     }
     stream->eof = 1;
     return 0;
@@ -203,7 +203,7 @@ int fseek(FILE *stream, off_t offset, int whence)
 
 int feof(FILE *stream)
 {
-    return stream->eof ? -1 : 0;
+    return stream->eof ? EOF : 0;
 }
 
 int fclose(FILE *stream)
