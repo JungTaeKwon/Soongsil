@@ -68,6 +68,9 @@ FILE *fopen(const char *pathname, const char *mode)
 
     FILE *fp = (FILE *)calloc(1, sizeof(FILE));
     fp->fd = fd;
+
+    fp->buffer = (char *)calloc(1, sizeof(BUFSIZE));
+
     return fp;
 }
 
@@ -176,7 +179,10 @@ int feof(FILE *stream)
 
 int fclose(FILE *stream)
 {
-    int result = close(stream->fd);
+    fflush(stream);
+
+    free(stream->buffer);
     free(stream);
-    return result;
+
+    return close(stream->fd);
 }
