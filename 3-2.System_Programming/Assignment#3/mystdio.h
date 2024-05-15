@@ -76,7 +76,9 @@ FILE *fopen(const char *pathname, const char *mode)
     FILE *fp = (FILE *)calloc(1, sizeof(FILE));
     fp->fd = fd;
 
+    // Allocate memory for buffer
     fp->buffer = (char *)calloc(1, BUFSIZE);
+    // For i/o buffering
     fp->bufpos = 0;
     fp->buflen = 0;
 
@@ -96,6 +98,7 @@ int fread(void *ptr, int size, int nmemb, FILE *stream)
 
     while (bytesRead < totalBytesToRead)
     {
+        // Iterative call of read()
         int result = read(stream->fd, buffPtr + bytesRead, totalBytesToRead - bytesRead);
         if (result < 0)
         {
@@ -113,6 +116,7 @@ int fread(void *ptr, int size, int nmemb, FILE *stream)
         }
     }
 
+    // Return read length
     return bytesRead / size;
 }
 
@@ -132,19 +136,24 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
         int spaceInBuffer = BUFSIZE - stream->bufpos;
         int bytesToCopy = (totalBytesToWrite - bytesWritten) < spaceInBuffer ? (totalBytesToWrite - bytesWritten) : spaceInBuffer;
 
+        // Move to buffer and fflush when buffer is full
+        // Essential than calling many syscalls such as write()
         memcpy(stream->buffer + stream->bufpos, data + bytesWritten, bytesToCopy);
         stream->bufpos += bytesToCopy;
         bytesWritten += bytesToCopy;
 
+        // fflush buffer when buffer is full
+        // and continue i/o
         if (stream->bufpos == BUFSIZE)
         {
-            if (fflush(stream) == EOF)
+            if (fflush(stream) == EOF) // EOF
             {
                 return EOF;
             }
         }
     }
 
+    // fflush even if the buffer is not full
     if (fflush(stream) == EOF)
     {
         return EOF;
@@ -156,15 +165,17 @@ int fwrite(const void *ptr, int size, int nmemb, FILE *stream)
 int fflush(FILE *stream)
 {
     if (stream == NULL || stream->buffer == NULL)
-        return EOF;
+        return -1;
 
     if (stream->bufpos > 0)
     {
+        // fflush buffer data to file descriptor
         int written = write(stream->fd, stream->buffer, stream->bufpos);
         if (written < stream->bufpos)
         {
             return EOF;
         }
+        // Reset pos
         stream->bufpos = 0;
     }
 
@@ -179,6 +190,9 @@ int fseek(FILE *stream, off_t offset, int whence)
 
     switch (whence)
     {
+        // logic
+        // 1. Find a new position to move with 'whence'
+        // 2. Move to new position with offset(param)
     case SEEK_SET:
         new_pos = offset;
         break;
@@ -208,8 +222,10 @@ int feof(FILE *stream)
 
 int fclose(FILE *stream)
 {
+    // fflush buffer
     fflush(stream);
 
+    // Free allocated data
     free(stream->buffer);
     free(stream);
 
