@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define BUFSIZE 4
+#define BUFSIZE 1024
 #define EOF -1
 #define SEEK_SET 0
 #define SEEK_CUR 1
