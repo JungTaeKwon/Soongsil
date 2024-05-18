@@ -195,15 +195,16 @@ void round_robin()
 
     int completed_processes = 0;
     int current_process = 0;
+    int total_time = 0;
 
     while (completed_processes < num_processes)
     {
         if (processes[current_process].remaining_time > 0)
         {
-            printf("[*] Running Process %d\n", processes[current_process].id);
+            printf("[*] Running Process %d for %d seconds\n", processes[current_process].id, time_quantum);
             if (processes[current_process].remaining_time <= time_quantum)
             {
-                printf("[*] Process %d completed\n", processes[current_process].id);
+                printf("[*] Process %d completed in %d seconds\n", processes[current_process].id, processes[current_process].burst_time);
                 completed_processes++;
                 processes[current_process].remaining_time = 0;
             }
@@ -211,8 +212,10 @@ void round_robin()
             {
                 processes[current_process].remaining_time -= time_quantum;
             }
+            total_time += time_quantum;
         }
         current_process = (current_process + 1) % num_processes;
     }
+    printf("[*] Total time taken: %d seconds\n", total_time);
     return;
 }
