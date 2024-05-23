@@ -3,14 +3,15 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 
 #define BUFSIZE 1024
 #define EOF -1
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
-
-#define PROCESS_COUNT 5
 
 typedef struct myFile
 {

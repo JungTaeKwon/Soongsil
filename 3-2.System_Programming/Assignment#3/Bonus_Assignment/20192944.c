@@ -1,4 +1,3 @@
-// #include <stdio.h>
 #include "20192944.h"
 
 #define BUFFER_SIZE 256
@@ -32,7 +31,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < PROCESS_COUNT; i++)
     {
         // Create 4 child processes ONLY in process #0 (parent process)
-        if (pids[0] == getpid())
+        if (pids[i] == getpid())
         {
             // Save pid of parent process
             pids[i + 1] = fork();
@@ -45,6 +44,7 @@ int main(int argc, char *argv[])
     }
 
     /*
+
     Save pipe index to local variable 'pipeNum'
     Each process should know which pipe index is allcoated to its process
     */
@@ -70,10 +70,14 @@ int main(int argc, char *argv[])
         }
 
         fgets(tmpBuff, BUFFER_SIZE, fp);
-        printf("%d %s", getpid(), tmpBuff);
+        // printf("%d %s", getpid(), tmpBuff);
+        char buffer[256];
+        int length = snprintf(buffer, sizeof(buffer), "%d %s", getpid(), tmpBuff);
+        write(STDOUT_FILENO, buffer, length);
 
         // Let the next process(process #1) take turns
-        write(pipefd[pipeNum + 1][1], tmpBuff, sizeof(tmpBuff));
+        write(pipefd[pipeNum][1], tmpBuff, sizeof(tmpBuff));
+
         fclose(fp);
     }
 
@@ -87,19 +91,26 @@ int main(int argc, char *argv[])
             exit(1);
         }
         // Wait until previous process tells to read the buffer
-        read(pipefd[pipeNum][0], tmpBuff, sizeof(tmpBuff));
+        if (pipeNum == 0)
+        {
+            read(pipefd[PROCESS_COUNT][0], tmpBuff, sizeof(tmpBuff));
+        }
+        else
+        {
+            read(pipefd[pipeNum - 1][0], tmpBuff, sizeof(tmpBuff));
+        }
+
         /*
-        Each process get offset of the file read (line #136)
-        Get integer value so current process can jump to the suitable line (line #106)
+        Each process get offset of the file read (line #117)
+        Get integer value so current process can jump to the suitable line (line #107)
         */
         int offsetCnt = checkOffset(tmpBuff);
         if (offsetCnt == -1)
         {
-            /*
-            If '\0' is in the kernel buffer, checkOffset() will return -1 (line #131)
-            so that current process can tell "I'm exiting, you need to exit" to previous process
-            */
-            write(pipefd[pipeNum - 1][1], "\0", 1);
+            // offsetCnt == -1 means that the last process read EOF
+            // Tell next process "I finished all job". But current process won't be exit because of the waitpid()
+            write(pipefd[pipeNum][1], "\0", 1);
+            // So move the context to the end of the program (waiting queue)
             break;
         }
         // Jump to offset
@@ -113,32 +124,43 @@ int main(int argc, char *argv[])
         // Consider the last 'fgets()' (it doesn't include '\n')
         if (tmpBuff[strlen(tmpBuff) - 1] != '\n')
         {
-            printf("%d %s\n", getpid(), tmpBuff);
+            // printf("%d %s\n", getpid(), tmpBuff);
+            char buffer[256];
+            int length = snprintf(buffer, sizeof(buffer), "%d %s\n", getpid(), tmpBuff);
+            write(STDOUT_FILENO, buffer, length);
         }
         else
         {
-            printf("%d %s", getpid(), tmpBuff);
+            // printf("%d %s", getpid(), tmpBuff);
+            char buffer[256];
+            int length = snprintf(buffer, sizeof(buffer), "%d %s", getpid(), tmpBuff);
+            write(STDOUT_FILENO, buffer, length);
         }
-
-        // Next pipe number
-        int nextPipe = (pipeNum + 1) % (PROCESS_COUNT + 1);
 
         // If current process reach EOF
         if (feof(fp))
         {
             fclose(fp);
             // Tell previous process to exit
-            write(pipefd[pipeNum - 1][1], "\0", 1);
-            printf("%d Read all data\n", getpid());
+            write(pipefd[pipeNum][1], "\0", 1);
+            // printf("%d Read all data\n", getpid());
+            char buffer[256];
+            int length = snprintf(buffer, sizeof(buffer), "%d Read all data\n", getpid());
+            write(STDOUT_FILENO, buffer, length);
             break;
         }
         // Toss offset of file to the next process
-        write(pipefd[nextPipe][1], tmpBuff, sizeof(tmpBuff));
+        write(pipefd[pipeNum][1], tmpBuff, sizeof(tmpBuff));
+
         fclose(fp);
     }
     // Wait for exit of child processes
-    wait(NULL);
-    printf("%d I'm exiting...\n", getpid());
+    waitpid(pids[pipeNum + 1], 0, 0);
+
+    // printf("%d I'm exiting...\n", getpid());
+    char buffer[256];
+    int length = snprintf(buffer, sizeof(buffer), "%d I'm exiting...\n", getpid());
+    write(STDOUT_FILENO, buffer, length);
     return 0;
 }
 
