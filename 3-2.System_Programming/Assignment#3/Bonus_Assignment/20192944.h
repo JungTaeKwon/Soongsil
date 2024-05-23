@@ -36,6 +36,7 @@ int fflush(FILE *stream);
 int fseek(FILE *stream, off_t offset, int whence);
 int feof(FILE *stream);
 int fclose(FILE *stream);
+char *fgets(char *str, int num, FILE *stream);
 
 FILE *fopen(const char *pathname, const char *mode)
 {
@@ -232,4 +233,47 @@ int fclose(FILE *stream)
     free(stream);
 
     return close(stream->fd);
+}
+
+char *fgets(char *str, int num, FILE *stream)
+{
+    if (stream == NULL || str == NULL || num <= 0)
+    {
+        return NULL;
+    }
+
+    int i = 0;
+    while (i < num - 1) // Leave space for the null terminator
+    {
+        // Read one character from the stream
+        char c;
+        int readBytes = read(stream->fd, &c, 1);
+
+        // Check for EOF or read error
+        if (readBytes <= 0)
+        {
+            stream->eof = 1; // Indicate that we've hit EOF
+            if (i == 0)      // If no characters were read, return NULL
+            {
+                return NULL;
+            }
+            break; // If we've read some characters before, break and add null terminator
+        }
+
+        // Store the character in the buffer
+        str[i] = c;
+        i++;
+
+        // Stop if we encounter a newline character
+        if (c == '\n')
+        {
+            break;
+        }
+    }
+
+    // Null-terminate the string
+    str[i] = '\0';
+
+    // Return the buffer
+    return str;
 }

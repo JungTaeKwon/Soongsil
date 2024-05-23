@@ -1,4 +1,5 @@
-#include <stdio.h>
+// #include <stdio.h>
+#include "20192944.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -7,6 +8,8 @@
 
 #define BUFFER_SIZE 256
 #define PROCESS_COUNT 4
+
+int checkOffset(char *str);
 
 int main(int argc, char *argv[])
 {
@@ -27,7 +30,6 @@ int main(int argc, char *argv[])
     {
         if (pids[0] == getpid())
         {
-            // printf("Fork in %d process\n", getpid());
             pids[i + 1] = fork();
             if (pids[i + 1] == 0)
             {
@@ -56,41 +58,84 @@ int main(int argc, char *argv[])
         }
 
         fgets(tmpBuff, BUFFER_SIZE, fp);
-        printf("%d %s\n", getpid(), tmpBuff);
+        printf("%d %s", getpid(), tmpBuff);
 
-        // printf("Next pipe: %d\n", pipeNum + 1);
-        write(pipefd[pipeNum + 1][1], "start", 5);
+        write(pipefd[pipeNum + 1][1], tmpBuff, sizeof(tmpBuff));
         fclose(fp);
     }
-    int cnt = 5;
-    while (cnt--)
-    {
-        // printf("pid: %d, pipeNum: %d\n", getpid(), pipeNum);
 
+    while (1)
+    {
         FILE *fp = fopen(argv[1], "r");
         if (fp == NULL)
         {
             perror("[*] fopen error");
             exit(1);
         }
-        // printf("waiting from %d\n", pipeNum);
         read(pipefd[pipeNum][0], tmpBuff, sizeof(tmpBuff));
-        // printf("%d received %s\n", getpid(), tmpBuff);
-
+        int offsetCnt = checkOffset(tmpBuff);
+        if (offsetCnt == -1)
+        {
+            write(pipefd[pipeNum - 1][1], "\0", 1);
+            break;
+        }
+        for (int i = 0; i < offsetCnt; i++)
+        {
+            fgets(tmpBuff, BUFFER_SIZE, fp);
+        }
         fgets(tmpBuff, BUFFER_SIZE, fp);
-        printf("%d %s\n", getpid(), tmpBuff);
 
-        // printf("Next pipe: %d\n", pipeNum + 1);
-        write(pipefd[pipeNum + 1][1], "next", 4);
+        if (tmpBuff[strlen(tmpBuff) - 1] != '\n')
+        {
+            printf("%d %s\n", getpid(), tmpBuff);
+        }
+        else
+        {
+            printf("%d %s", getpid(), tmpBuff);
+        }
+
+        int nextPipe = (pipeNum + 1) % (PROCESS_COUNT + 1);
+
+        if (feof(fp))
+        {
+            fclose(fp);
+
+            write(pipefd[pipeNum - 1][1], "\0", 1);
+            printf("%d Read all data\n", getpid());
+            break;
+        }
+        write(pipefd[nextPipe][1], tmpBuff, sizeof(tmpBuff));
         fclose(fp);
     }
 
-    for (int i = PROCESS_COUNT; i >= 0; i--)
-    {
-        int status;
-        pid_t pid = waitpid(pids[i], &status, 0);
-        printf("%d I'm exiting...\n", pid);
-    }
-    printf("%d I'm exiting..\n", getpid());
+    wait(NULL);
+    printf("%d I'm exiting...\n", getpid());
     return 0;
+}
+
+int checkOffset(char *str)
+{
+    str[strlen(str) - 1] = '\0';
+    if (strcmp(str, "first") == 0)
+        return 1;
+    else if (strcmp(str, "second") == 0)
+        return 2;
+    else if (strcmp(str, "third") == 0)
+        return 3;
+    else if (strcmp(str, "fourth") == 0)
+        return 4;
+    else if (strcmp(str, "fifth") == 0)
+        return 5;
+    else if (strcmp(str, "sixth") == 0)
+        return 6;
+    else if (strcmp(str, "seventh") == 0)
+        return 7;
+    else if (strcmp(str, "eighth") == 0)
+        return 8;
+    else if (strcmp(str, "nineth") == 0)
+        return 9;
+    else if (strcmp(str, "tenth") == 0)
+        return 10;
+    else
+        return -1;
 }
