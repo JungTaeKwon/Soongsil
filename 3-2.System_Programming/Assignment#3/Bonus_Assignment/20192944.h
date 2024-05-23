@@ -1,11 +1,8 @@
 // System Programming Assignment#3 20192944 JungTae Kwon
 // Simple implementation of stdio.h
-#include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #define BUFSIZE 1024
 #define EOF -1

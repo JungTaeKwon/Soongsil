@@ -1,10 +1,5 @@
 // #include <stdio.h>
 #include "20192944.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <string.h>
 
 #define BUFFER_SIZE 256
 #define PROCESS_COUNT 4
