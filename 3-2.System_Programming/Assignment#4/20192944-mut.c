@@ -21,8 +21,10 @@ int is_prime(int v)
             continue;
         if (v % i == 0)
         {
+            // Lock shared mem space
             pthread_mutex_lock(&mutex);
             pflag[v] = 0;
+            // Unlock shared mem space
             pthread_mutex_unlock(&mutex);
             return 0;
         }
@@ -41,9 +43,11 @@ void *work(void *arg)
     {
         if (is_prime(i))
         {
+            // Lock shared mem space
             pthread_mutex_lock(&mutex);
             primes[total] = i;
             total++;
+            // Unlock shared mem space
             pthread_mutex_unlock(&mutex);
         }
     }
