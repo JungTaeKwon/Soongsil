@@ -57,6 +57,8 @@ int main(int argn, char **argv)
     // array to save offset
     int thread_ids[THREADS - 1];
 
+    pthread_mutex_init(&mutex, NULL);
+
     for (i = 0; i < N; i++)
     {
         pflag[i] = 1;
