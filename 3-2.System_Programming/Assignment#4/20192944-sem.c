@@ -23,11 +23,7 @@ int is_prime(int v)
             continue;
         if (v % i == 0)
         {
-            // semaphore--
-            sem_wait(&sem);
             pflag[v] = 0;
-            // semaphore++
-            sem_post(&sem);
             return 0;
         }
     }
