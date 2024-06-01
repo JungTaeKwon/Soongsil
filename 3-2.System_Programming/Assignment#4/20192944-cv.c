@@ -22,13 +22,7 @@ int is_prime(int v)
             continue;
         if (v % i == 0)
         {
-            // Lock shared mem space
-            pthread_mutex_lock(&mutex);
             pflag[v] = 0;
-            // Unock shared mem space
-            pthread_mutex_unlock(&mutex);
-            // Wake other thread
-            pthread_cond_signal(&cond);
             return 0;
         }
     }
