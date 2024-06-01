@@ -84,5 +84,7 @@ int main(int argn, char **argv)
         printf("%d\n", primes[i]);
     }
 
+    pthread_mutex_destroy(&mutex);
+
     return 0;
 }
