@@ -10,6 +10,7 @@ int pflag[N];
 int total = 0;
 pthread_mutex_t mutex;
 pthread_cond_t cond;
+int data = 0;
 
 int is_prime(int v)
 {
@@ -41,13 +42,27 @@ void *work(void *arg)
         if (is_prime(i))
         {
             // Lock shared mem space
+            // waiter
             pthread_mutex_lock(&mutex);
+            while (data)
+            {
+                pthread_cond_wait(&cond, &mutex);
+            }
+            // take action
             primes[total] = i;
             total++;
+            data = 1;
             // Unlock shared mem space
             pthread_mutex_unlock(&mutex);
+
             // Wake other thread
+            // signaler
+            pthread_mutex_lock(&mutex);
+            // modify d
+            data = 0;
+            // send signal
             pthread_cond_signal(&cond);
+            pthread_mutex_unlock(&mutex);
         }
     }
     return NULL;
@@ -86,6 +101,9 @@ int main(int argn, char **argv)
     {
         printf("%d\n", primes[i]);
     }
+
+    pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&cond);
 
     return 0;
 }
