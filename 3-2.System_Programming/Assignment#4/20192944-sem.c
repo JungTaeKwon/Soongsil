@@ -88,5 +88,7 @@ int main(int argn, char **argv)
         printf("%d\n", primes[i]);
     }
 
+    sem_destroy(&sem);
+
     return 0;
 }
