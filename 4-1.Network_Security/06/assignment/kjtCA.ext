@@ -1,0 +1,3 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=critical,CA:TRUE
+keyUsage = digitalSignature, keyCertSign, cRLSign

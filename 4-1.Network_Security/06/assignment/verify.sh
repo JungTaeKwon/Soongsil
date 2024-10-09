@@ -1,0 +1,1 @@
+openssl verify -untrusted kjtCA.pem kjt.pem
