@@ -410,3 +410,20 @@ modules.xml
 !*.*
 # Unignore all dirs
 !*/
+
+*~
+_*
+*.o
+*.d
+*.asm
+*.sym
+*.img
+vectors.S
+bootblock
+entryother
+initcode
+initcode.out
+kernel
+kernelmemfs
+mkfs
+.gdbinit
