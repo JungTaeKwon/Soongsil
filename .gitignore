@@ -404,6 +404,7 @@ modules.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle,java,intellij,macos,intellij+all,intellij+iml,c++,c
 
+<<<<<<< Updated upstream
 # Ignore all
 *
 # Unignore all with extensions
@@ -427,3 +428,5 @@ kernel
 kernelmemfs
 mkfs
 .gdbinit
+=======
+>>>>>>> Stashed changes
