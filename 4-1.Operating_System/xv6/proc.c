@@ -340,9 +340,11 @@ void scheduler(void)
   for (;;)
   {
     // Enable interrupts on this processor.
+    // 인터럽트 받을 수 있게 세팅
     sti();
 
     // Loop over process table looking for process to run.
+    // Ready state에 있는 프로세스를 찾기
     acquire(&ptable.lock);
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
@@ -352,10 +354,13 @@ void scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      // 스케줄링할 프로세스의 메모리 세팅을 하고, state를 RUNNING으로 바꿔줌
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
 
+      // context switching 하는 function
+      // 스케줄러를 했다가 RUNNING으로 바꾼 process의 context로 바꾸는 작업
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
