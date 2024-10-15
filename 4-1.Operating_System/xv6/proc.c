@@ -393,13 +393,17 @@ void sched(void)
   if (readeflags() & FL_IF)
     panic("sched interruptible");
   intena = mycpu()->intena;
-  swtch(&p->context, mycpu()->scheduler);
+  swtch(&p->context, mycpu()->scheduler); // 현재 프로세스에서 스케줄러로 컨텍스 스위칭
   mycpu()->intena = intena;
 }
 
 // Give up the CPU for one scheduling round.
 void yield(void)
 {
+  /*
+  선점형 방식으므로 프로세스를 쓰다가 놓아주는 작업이 필요함
+  이때 쓰는 양보하는 function
+  */
   acquire(&ptable.lock); // DOC: yieldlock
   myproc()->state = RUNNABLE;
   sched();
