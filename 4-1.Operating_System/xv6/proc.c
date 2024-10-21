@@ -562,7 +562,7 @@ int forknexec(const char *path, const char **args)
   // 새 프로세스를 생성하여 할당.
   if ((np = allocproc()) == 0)
   {
-    return -1;
+    return -2;
   }
 
   // 현재 프로세스 상태를 복사하여 새 프로세스에 초기화.
@@ -727,5 +727,5 @@ bad:
     iunlockput(ip);
     end_op();
   }
-  return -1;
+  return -2;
 }
