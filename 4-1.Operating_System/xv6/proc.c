@@ -334,40 +334,50 @@ int wait(void)
 void scheduler(void)
 {
   struct proc *p;
+  // 현재 실행 중인 cpu의 정보를 반환
   struct cpu *c = mycpu();
+  // cpu가 run하는 프로세스의 포인터를 0으로 초기화 함으로서, 스케줄링을 새로 할 것임을 의미
   c->proc = 0;
 
   for (;;)
   {
-    // Enable interrupts on this processor.
-    // 인터럽트 받을 수 있게 세팅
+    // 선점형 스케줄링: 한 프로세스 실행 중 다른 인터럽트 받을 수 있게 세팅
     sti();
 
-    // Loop over process table looking for process to run.
-    // Ready state에 있는 프로세스를 찾기
+    /*
+    protcess table에 lock을 통해 타 process의 접근 제한(상호 배제)
+    그 후, Ready state에 있는 프로세스를 찾는다.
+    과제 #3을 위해서 해당 로직 안에 우선 순위 기반 탐색하는 방식을 도입해야 함.
+    -> 자료구조 필요
+    */
     acquire(&ptable.lock);
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
+      // 실행 가능한 상태(스케줄링의 대상이 될 수 있는)가 아니면 무한루프
       if (p->state != RUNNABLE)
         continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      // 스케줄링할 프로세스의 메모리 세팅을 하고, state를 RUNNING으로 바꿔줌
+      /*
+      실행할 process를 찾으면 cpu가 proc 필드를 해당 process로 설정
+      switchuvm(p)를 통해 해당 process의 가상 메모리로 전환하고,
+      process의 상태를 RUNNING으로 변경한다.
+      */
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
 
-      // context switching 하는 function
-      // 스케줄러를 했다가 RUNNING으로 바꾼 process의 context로 바꾸는 작업
+      /*
+      스케줄러를 진행하던 context를 RUNNING으로 바꾼 process의 context로 바꾸는 작업
+      그 후, 사용자 공간에서 process를 실행하다가 다시 kernel mode로 돌아옴.
+      즉, scheduler로 다시 돌아오는 것
+      */
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
+      // process 실행을 마친 후 현재 cpu가 실행 중인 process가 없다는 뜻으로 0으로 초기화
       c->proc = 0;
     }
+    // process table lock을 해제하여 다른 cpu가 process가 접근 가능하게 함.
     release(&ptable.lock);
   }
 }
