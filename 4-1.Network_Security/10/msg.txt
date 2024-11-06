@@ -1,0 +1,23 @@
+From: oxdjww@gmail.com
+To: oxdjww@gmail.com
+Subject: M2Crypto S/MIME testing
+MIME-Version: 1.0
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Type: application/x-pkcs7-mime; smime-type=enveloped-data; name="smime.p7m"
+Content-Transfer-Encoding: base64
+
+MIICqwYJKoZIhvcNAQcDoIICnDCCApgCAQAxggGxMIIBrQIBADCBlDB8MQswCQYD
+VQQGEwJLUjEOMAwGA1UECAwFU2VvdWwxEDAOBgNVBAcMB0RvbmdqYWsxDDAKBgNV
+BAoMA1NTVTELMAkGA1UECwwCU1cxDzANBgNVBAMMBm94ZGp3dzEfMB0GCSqGSIb3
+DQEJARYQb3hkand3QGdtYWlsLmNvbQIUcq77GMHBsu8bZM7rVQbmCOhlVyQwDQYJ
+KoZIhvcNAQEBBQAEggEAk995zkNb1H76nfo1Jb3lx40a8RVspofhQbbACuc0usaq
+Pjn+BoTainBS9uxUe4aogrRRvgunyPV9bMiGJTU+jHmAqgLnmZSBHZOeBzgEW4Qw
+K4qMkljnAJms0Y4Vnguh8Lg2626FTk+tL4aUEgK02TSVTRwtIRvk6afvpI1+IyM7
++r53nOcH8Kh/TZU/rBClQ6DnlAxVTIgbqBYmFou0unPcfcNm48dfNL324WjVRgKC
+dZvFhtzjWE3c7p/5DnI1/bY+LXgVkzcvKH3GV5T/tR0zWO6WWPgk3JwSoTg51Kq+
+zknkQUPR0Ss8Q7wEXsy0gk0HoIK3uShf9vPYkPTMHTCB3QYJKoZIhvcNAQcBMB0G
+CWCGSAFlAwQBAgQQajtWFMehU2zc7wKDUkEU44CBsIRU4S/1LfbgvbBIev1BSF23
+ljZ9KsmVhaiy67vuQCi+EgOCWVGjRKkARpj62IbUeTUs8+Afw57aBTDPtp1xi6mW
+VH2ovnoV2u6ZvmCFk/ycehhgQlXWvmFI2QNOKeFAfDrBypgL+/MmBeK7pm7oUAw+
+jyjCXmqIbNDgW+CV5Tu1pHGz7h3StXWD4pcCZ95HhaJRFumrC6scEwLT+1HBZK/O
+2fTPpdml2OecGBfrnJyv

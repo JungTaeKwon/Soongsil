@@ -1,0 +1,214 @@
+{
+    "Labels": [
+        {
+            "Name": "Face",
+            "Confidence": 99.99897766113281,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Head"
+                },
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Head",
+            "Confidence": 99.99897766113281,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Person",
+            "Confidence": 99.99897766113281,
+            "Instances": [
+                {
+                    "BoundingBox": {
+                        "Width": 0.9930771589279175,
+                        "Height": 0.9311298727989197,
+                        "Left": 0.004265899769961834,
+                        "Top": 0.06233201548457146
+                    },
+                    "Confidence": 99.5963363647461
+                }
+            ],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Human"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Photography",
+            "Confidence": 99.99897766113281,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [
+                {
+                    "Name": "Photo"
+                }
+            ],
+            "Categories": [
+                {
+                    "Name": "Hobbies and Interests"
+                }
+            ]
+        },
+        {
+            "Name": "Portrait",
+            "Confidence": 99.99897766113281,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Face"
+                },
+                {
+                    "Name": "Head"
+                },
+                {
+                    "Name": "Person"
+                },
+                {
+                    "Name": "Photography"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Hobbies and Interests"
+                }
+            ]
+        },
+        {
+            "Name": "Body Part",
+            "Confidence": 99.56550598144531,
+            "Instances": [],
+            "Parents": [],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Neck",
+            "Confidence": 99.56550598144531,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Body Part"
+                },
+                {
+                    "Name": "Face"
+                },
+                {
+                    "Name": "Head"
+                },
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Hair",
+            "Confidence": 80.90337371826172,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Beauty and Personal Care"
+                }
+            ]
+        },
+        {
+            "Name": "Black Hair",
+            "Confidence": 61.70859909057617,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Hair"
+                },
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Beauty and Personal Care"
+                }
+            ]
+        },
+        {
+            "Name": "Hairdresser",
+            "Confidence": 56.203643798828125,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Person Description"
+                }
+            ]
+        },
+        {
+            "Name": "Haircut",
+            "Confidence": 55.5717658996582,
+            "Instances": [],
+            "Parents": [
+                {
+                    "Name": "Hairdresser"
+                },
+                {
+                    "Name": "Person"
+                }
+            ],
+            "Aliases": [],
+            "Categories": [
+                {
+                    "Name": "Beauty and Personal Care"
+                }
+            ]
+        }
+    ],
+    "LabelModelVersion": "3.0"
+}
