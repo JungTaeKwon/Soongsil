@@ -112,3 +112,34 @@ int sys_forknexec(void)
 
   return forknexec((const char *)path, (const char **)argv);
 }
+
+// Assignment#3
+// syscall로 전달된 인자를 받아서 set_proc_priority로 전달
+int sys_set_proc_priority(void)
+{
+  int pid, priority;
+  if (argint(0, &pid) < 0 || argint(1, &priority) < 0)
+    return -1;
+
+  // 범위 체크: priority는 1에서 10까지
+  if (priority < 1 || priority > 10)
+  {
+    cprintf("%s%d%s", "===== [ERROR] INPUT PRIORITY[", priority, "], MUST BE 1~10\n");
+    return -1;
+  }
+
+  return set_proc_priority(pid, priority);
+}
+
+// syscall로 전달된 인자를 받아서 get_proc_priority로 전달
+int sys_get_proc_priority(void)
+{
+  int pid;
+
+  // 첫 번째 인자인 pid를 가져옴
+  if (argint(0, &pid) < 0)
+    return -1;
+
+  // 인자를 get_proc_priority 함수로 전달
+  return get_proc_priority(pid);
+}

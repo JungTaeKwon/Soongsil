@@ -116,6 +116,11 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  // Assignment#3 init priority as 5
+  p->priority = 5;
+  // Assignment#3 init run count as 0
+  p->run_count = 0;
+
   return p;
 }
 
@@ -217,6 +222,11 @@ int fork(void)
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
   pid = np->pid;
+
+  // Assignment#3 Set Child's proc priority as Parent's proc priority
+  // cprintf("%s: %d\n", "===== PARENT PRIORITY: ", curproc->priority);
+  np->priority = curproc->priority;
+  // cprintf("%s: %d\n", "===== CHILD PRIORITY: ", np->priority);
 
   acquire(&ptable.lock);
 
@@ -331,6 +341,56 @@ int wait(void)
 //   - swtch to start running that process
 //   - eventually that process transfers control
 //       via swtch back to the scheduler.
+// void scheduler(void)
+// {
+//   struct proc *p;
+//   // 현재 실행 중인 cpu의 정보를 반환
+//   struct cpu *c = mycpu();
+//   // cpu가 run하는 프로세스의 포인터를 0으로 초기화 함으로서, 스케줄링을 새로 할 것임을 의미
+//   c->proc = 0;
+
+//   for (;;)
+//   {
+//     // 선점형 스케줄링: 한 프로세스 실행 중 다른 인터럽트 받을 수 있게 세팅
+//     sti();
+
+//     /*
+//     protcess table에 lock을 통해 타 process의 접근 제한(상호 배제)
+//     그 후, Ready state에 있는 프로세스를 찾는다.
+//     과제 #3을 위해서 해당 로직 안에 우선 순위 기반 탐색하는 방식을 도입해야 함.
+//     -> 자료구조 필요
+//     */
+//     acquire(&ptable.lock);
+//     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+//     {
+//       // 실행 가능한 상태(스케줄링의 대상이 될 수 있는)가 아니면 무한루프
+//       if (p->state != RUNNABLE)
+//         continue;
+
+//       /*
+//       실행할 process를 찾으면 cpu가 proc 필드를 해당 process로 설정
+//       switchuvm(p)를 통해 해당 process의 가상 메모리로 전환하고,
+//       process의 상태를 RUNNING으로 변경한다.
+//       */
+//       c->proc = p;
+//       switchuvm(p);
+//       p->state = RUNNING;
+
+//       /*
+//       스케줄러를 진행하던 context를 RUNNING으로 바꾼 process의 context로 바꾸는 작업
+//       그 후, 사용자 공간에서 process를 실행하다가 다시 kernel mode로 돌아옴.
+//       즉, scheduler로 다시 돌아오는 것
+//       */
+//       swtch(&(c->scheduler), p->context);
+//       switchkvm();
+
+//       // process 실행을 마친 후 현재 cpu가 실행 중인 process가 없다는 뜻으로 0으로 초기화
+//       c->proc = 0;
+//     }
+//     // process table lock을 해제하여 다른 cpu가 process가 접근 가능하게 함.
+//     release(&ptable.lock);
+//   }
+// }
 void scheduler(void)
 {
   struct proc *p;
@@ -341,43 +401,61 @@ void scheduler(void)
 
   for (;;)
   {
-    // 선점형 스케줄링: 한 프로세스 실행 중 다른 인터럽트 받을 수 있게 세팅
-    sti();
+    int highest_priority = 0xff;
+    struct proc *selected_proc = 0;
 
-    /*
-    protcess table에 lock을 통해 타 process의 접근 제한(상호 배제)
-    그 후, Ready state에 있는 프로세스를 찾는다.
-    과제 #3을 위해서 해당 로직 안에 우선 순위 기반 탐색하는 방식을 도입해야 함.
-    -> 자료구조 필요
-    */
+    sti();
     acquire(&ptable.lock);
+
+    // Aging Logic
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
-      // 실행 가능한 상태(스케줄링의 대상이 될 수 있는)가 아니면 무한루프
+      if (p->state == RUNNABLE)
+      {
+        if (p->run_count >= 100)
+        {
+          // 충분히 많이 실행 됐으면 priority 하락 (run_count가 100 이상)
+          p->priority++;
+          p->run_count = 0; // priority가 변경되었으므로 run_count 초기화
+        }
+        else
+        {
+          // 많이 실행되지 못한 (run_count가 100 미만) 프로세스는 priority 증가
+          p->priority--;
+          p->run_count = 0; // priority가 변경되었으므로 run_count 초기화
+        }
+        if (p->priority >= 10)
+          p->priority = 1;
+        if (p->priority <= 0)
+          p->priority = 10;
+      }
+    }
+
+    // 우선순위 가장 높은 프로세스 선택
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    {
       if (p->state != RUNNABLE)
         continue;
 
-      /*
-      실행할 process를 찾으면 cpu가 proc 필드를 해당 process로 설정
-      switchuvm(p)를 통해 해당 process의 가상 메모리로 전환하고,
-      process의 상태를 RUNNING으로 변경한다.
-      */
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      if (p->priority < highest_priority)
+      {
+        highest_priority = p->priority;
+        selected_proc = p;
+      }
+    }
+    if (selected_proc)
+    {
+      selected_proc->run_count += 10;
+      c->proc = selected_proc;
+      switchuvm(selected_proc);
+      selected_proc->state = RUNNING;
 
-      /*
-      스케줄러를 진행하던 context를 RUNNING으로 바꾼 process의 context로 바꾸는 작업
-      그 후, 사용자 공간에서 process를 실행하다가 다시 kernel mode로 돌아옴.
-      즉, scheduler로 다시 돌아오는 것
-      */
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), selected_proc->context);
       switchkvm();
 
-      // process 실행을 마친 후 현재 cpu가 실행 중인 process가 없다는 뜻으로 0으로 초기화
       c->proc = 0;
     }
-    // process table lock을 해제하여 다른 cpu가 process가 접근 가능하게 함.
+
     release(&ptable.lock);
   }
 }
@@ -738,4 +816,46 @@ bad:
     end_op();
   }
   return -2;
+}
+
+// Assignment#3
+int set_proc_priority(int pid, int priority)
+{
+  // cprintf("%s", "===== SET_PROC_PRIORITY =====\n");
+  // cprintf("PID: %d, Priority: %d\n", pid, priority);
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->pid == pid)
+    {
+      p->priority = priority;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  release(&ptable.lock);
+  cprintf("%s", "===== PROCESS NOT FOUND =====\n");
+  return -1;
+}
+
+int get_proc_priority(int pid)
+{
+  // cprintf("%s", "===== GET_PROC_PRIORITY =====\n");
+  // cprintf("PID: %d\n", pid);
+  struct proc *p;
+  int priority = -1;
+
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->pid == pid)
+    {
+      priority = p->priority;
+      break;
+    }
+  }
+  release(&ptable.lock);
+  return priority;
 }

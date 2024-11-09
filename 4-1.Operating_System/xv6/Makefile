@@ -183,6 +183,7 @@ UPROGS=\
 	_zombie\
 	_hello\
 	_20192944_2\
+	_20192944_3\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
