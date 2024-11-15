@@ -3,6 +3,7 @@ package problem4;
 import problem2.factory.CarPartsFactory;
 import problem3.Builder;
 import problem3.Car;
+import problem3.CarBuilder;
 import problem3.Color;
 
 /**
@@ -14,41 +15,45 @@ public class BaseBuilderProxyDecorator implements Builder {
     private Builder builder;
 
     public BaseBuilderProxyDecorator(Builder builder) {
-
+        this.builder = builder;
     }
 
-    public BaseBuilderProxyDecorator(CarPartsFactory factory){
-
+    public BaseBuilderProxyDecorator(CarPartsFactory factory) {
+        this.builder = new CarBuilder(factory);
     }
 
     @Override
     public Builder addDoors(int numDoors) {
-        return null;
+        builder.addDoors(numDoors);
+        return this;
     }
 
     @Override
     public Builder addWheels(int numWheels) {
-        return null;
+        builder.addWheels(numWheels);
+        return this;
     }
 
     @Override
     public Builder setRoof() {
-        return null;
+        builder.setRoof();
+        return this;
     }
 
     @Override
     public Builder setColor(Color color) {
-        return null;
+        builder.setColor(color);
+        return this;
     }
 
     @Override
     public Car getCar() {
-        return null;
+        return builder.getCar();
     }
 
     @Override
     public void reset() {
-
+        builder.reset();
     }
 }
 /**
