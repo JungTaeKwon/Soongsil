@@ -2,7 +2,10 @@ package problem2.factory;
 
 import problem2.CompanyName;
 import problem2.door.Door;
+import problem2.door.HyundaiDoor;
+import problem2.roof.HyundaiRoof;
 import problem2.roof.Roof;
+import problem2.wheel.HyundaiWheel;
 import problem2.wheel.Wheel;
 
 /**
@@ -23,17 +26,17 @@ public class HyundaiPartsFactory implements CarPartsFactory {
 
     @Override
     public Door createDoor() {
-        return null;
+        return new HyundaiDoor(companyName);
     }
 
     @Override
     public Wheel createWheel() {
-        return null;
+        return new HyundaiWheel(companyName);
     }
 
     @Override
     public Roof createRoof() {
-        return null;
+        return new HyundaiRoof(companyName);
     }
 }
 /**
