@@ -71,10 +71,6 @@ public class Car {
     public List<Wheel> getWheels() {
         return this.wheels;
     }
-
-    public Roof getRoof() {
-        return this.roofs.getFirst();
-    }
 }
 /**
  * ===============END===============
