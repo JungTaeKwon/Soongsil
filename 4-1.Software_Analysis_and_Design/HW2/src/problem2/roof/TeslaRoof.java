@@ -1,4 +1,10 @@
 package problem2.roof;
 
-public class TeslaRoof {
+import problem2.CompanyName;
+
+public class TeslaRoof extends Roof {
+
+    public TeslaRoof(CompanyName companyName) {
+        super(companyName);
+    }
 }

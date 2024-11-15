@@ -28,35 +28,51 @@ public class Car {
     }
 
     public int numWheels() {
-        return 0;
+        return this.wheels.size();
     }
 
     public int numDoors() {
-        return 0;
+        return this.doors.size();
     }
 
     public int numRoofs() {
-        return 0;
+        return this.roofs.size();
     }
 
     public int getColor() {
-        return 0;
+        return this.color.ordinal();
+    }
+
+    public void addDoor(Door door) {
+        this.doors.add(door);
+    }
+
+    public void addWheel(Wheel wheel) {
+        this.wheels.add(wheel);
+    }
+
+    public void setRoof(Roof roof) {
+        this.roofs.set(0, roof);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public CompanyName getCompanyName() {
-        return null;
+        return this.companyName;
     }
 
     public List<Door> getDoors() {
-        return null;
+        return this.doors;
     }
 
     public List<Wheel> getWheels() {
-        return null;
+        return this.wheels;
     }
 
     public Roof getRoof() {
-        return null;
+        return this.roofs.get(0);
     }
 }
 /**

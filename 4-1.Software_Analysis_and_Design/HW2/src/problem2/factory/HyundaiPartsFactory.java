@@ -8,16 +8,18 @@ import problem2.roof.Roof;
 import problem2.wheel.HyundaiWheel;
 import problem2.wheel.Wheel;
 
+import static problem2.CompanyName.HYUNDAI;
+
 /**
  * ==============BEGIN==============
  * Complete the below code that requires your implementation
  * If necessary, you can make your own methods or classes so that the corresponding tests are passed
  */
 public class HyundaiPartsFactory implements CarPartsFactory {
-    CompanyName companyName;
+    private final CompanyName companyName;
 
     public HyundaiPartsFactory() {
-        this.companyName = CompanyName.HYUNDAI;
+        this.companyName = HYUNDAI;
     }
 
     public CompanyName getCompanyName() {
