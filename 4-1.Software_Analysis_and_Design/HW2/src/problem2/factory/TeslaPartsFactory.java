@@ -19,21 +19,21 @@ public class TeslaPartsFactory implements CarPartsFactory {
 
     @Override
     public Door createDoor() {
-        return new TeslaDoor(companyName);
+        return new TeslaDoor(getCompanyName());
     }
 
     @Override
     public Wheel createWheel() {
-        return new TeslaWheel(companyName);
+        return new TeslaWheel(getCompanyName());
     }
 
     @Override
     public Roof createRoof() {
-        return new TeslaRoof(companyName);
+        return new TeslaRoof(getCompanyName());
     }
 
     @Override
     public CompanyName getCompanyName() {
-        return null;
+        return this.companyName;
     }
 }

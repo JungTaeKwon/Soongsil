@@ -14,7 +14,7 @@ public class CarBuilder implements Builder {
 
     public CarBuilder(CarPartsFactory factory) {
         builderFactory = factory;
-        builderCar = new Car();
+        builderCar = new Car(factory.getCompanyName());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CarBuilder implements Builder {
 
     @Override
     public void reset() {
-        this.builderCar = new Car();
+        this.builderCar = new Car(null);
     }
 }
 /**

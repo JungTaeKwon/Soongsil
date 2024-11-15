@@ -20,11 +20,12 @@ public class Car {
     private Color color;
     private CompanyName companyName;
 
-    public Car() {
+    public Car(CompanyName companyName) {
         this.doors = new ArrayList<>();
         this.wheels = new ArrayList<>();
         this.roofs = new ArrayList<>();
         this.color = Color.BLACK;
+        this.companyName = companyName;
     }
 
     public int numWheels() {
@@ -39,8 +40,8 @@ public class Car {
         return this.roofs.size();
     }
 
-    public int getColor() {
-        return this.color.ordinal();
+    public Color getColor() {
+        return this.color;
     }
 
     public void addDoor(Door door) {
@@ -52,7 +53,7 @@ public class Car {
     }
 
     public void setRoof(Roof roof) {
-        this.roofs.set(0, roof);
+        this.roofs.add(roof);
     }
 
     public void setColor(Color color) {
@@ -72,7 +73,7 @@ public class Car {
     }
 
     public Roof getRoof() {
-        return this.roofs.get(0);
+        return this.roofs.getFirst();
     }
 }
 /**

@@ -22,23 +22,24 @@ public class HyundaiPartsFactory implements CarPartsFactory {
         this.companyName = HYUNDAI;
     }
 
-    public CompanyName getCompanyName() {
-        return companyName;
-    }
-
     @Override
     public Door createDoor() {
-        return new HyundaiDoor(companyName);
+        return new HyundaiDoor(getCompanyName());
     }
 
     @Override
     public Wheel createWheel() {
-        return new HyundaiWheel(companyName);
+        return new HyundaiWheel(getCompanyName());
     }
 
     @Override
     public Roof createRoof() {
-        return new HyundaiRoof(companyName);
+        return new HyundaiRoof(getCompanyName());
+    }
+
+    @Override
+    public CompanyName getCompanyName() {
+        return companyName;
     }
 }
 /**
