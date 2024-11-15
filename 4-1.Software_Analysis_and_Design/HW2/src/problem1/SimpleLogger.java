@@ -12,27 +12,30 @@ public class SimpleLogger {
     private PrintWriter fileWriter;
     private List<String> logs;
 
+    // Singleton instance
+    private static volatile SimpleLogger instance;
+
     public void log(LogLevel level, String message) {
         // A log request of level p in a logger with level q is enabled if p >= q.
         // It assumes that levels are ordered. For the standard levels, we have TRACE < DEBUG < INFO < WARN < ERROR
         String log = String.format("[%s] [%s] %s", level, LocalDateTime.now(), message);
-        if(level.ordinal() >= logLevel.ordinal()) {
+        if (level.ordinal() >= logLevel.ordinal()) {
             fileWriter.println(log);
             fileWriter.flush();
         }
         logs.add(log);
     }
 
-    public int getNumLogs(){
+    public int getNumLogs() {
         return logs.size();
     }
 
-    public void clear(){
+    public void clear() {
         // clear all previous messages in the list of logs
         logs.clear();
     }
 
-    public void setHandler(PrintStream ps){
+    public void setHandler(PrintStream ps) {
         // set output stream
         // if ps = new PrintStream(System.out), fileWriter will print a string into your console
         // if ps = new PrintStream(new FileOutputStream("...")), it will print a string into the target file
@@ -40,7 +43,7 @@ public class SimpleLogger {
         fileWriter = new PrintWriter(ps);
     }
 
-    private SimpleLogger(){
+    private SimpleLogger() {
         logLevel = LogLevel.INFO;
         logs = Collections.synchronizedList(new ArrayList());
         fileWriter = new PrintWriter(System.out); // default is set to the standard output
@@ -53,7 +56,15 @@ public class SimpleLogger {
      */
 
     public static SimpleLogger getInstance() {
-        return null;
+        // Double-Checked Locking
+        if (instance == null) {
+            synchronized (SimpleLogger.class) {
+                if (instance == null) {
+                    instance = new SimpleLogger();
+                }
+            }
+        }
+        return instance;
     }
 
     /**
