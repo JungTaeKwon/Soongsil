@@ -30,6 +30,8 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(forknexec)
-
+// Assignment#3
 SYSCALL(set_proc_priority)
 SYSCALL(get_proc_priority)
+// Assignment#4
+SYSCALL(getNumFreePages)

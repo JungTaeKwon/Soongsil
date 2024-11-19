@@ -143,3 +143,12 @@ int sys_get_proc_priority(void)
   // 인자를 get_proc_priority 함수로 전달
   return get_proc_priority(pid);
 }
+
+extern uint num_free_pages;  // kalloc.c에서 선언된 변수
+
+// Assignment#4
+int
+sys_getNumFreePages(void)
+{
+  return num_free_pages;
+}

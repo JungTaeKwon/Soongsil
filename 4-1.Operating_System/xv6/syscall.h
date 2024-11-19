@@ -24,3 +24,5 @@
 // Assignment#3
 #define SYS_set_proc_priority 23
 #define SYS_get_proc_priority 24
+// Assignment#4
+#define SYS_getNumFreePages 25

@@ -41,3 +41,5 @@ int forknexec(const char *, const char **);
 // Assignment#3
 int set_proc_priority(int, int);
 int get_proc_priority(int);
+// Assignment#4
+int getNumFreePages(void);

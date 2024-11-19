@@ -184,6 +184,7 @@ UPROGS=\
 	_hello\
 	_20192944_2\
 	_20192944_3\
+	_20192944_4\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
