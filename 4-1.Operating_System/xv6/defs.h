@@ -198,3 +198,7 @@ int get_proc_priority(int);
 
 // Assignment#4
 int sys_getNumFreePages(void);
+
+uint get_refcount(uint);
+void dec_refcount(uint);
+void inc_refcount(uint);

@@ -26,6 +26,23 @@ struct {
 // Assignment#4
 uint num_free_pages;
 
+uint pgrefcount[PHYSTOP >> PTXSHIFT];
+
+uint get_refcount(uint pa)
+{
+  return pgrefcount[pa >> PTXSHIFT];
+}
+
+void dec_refcount(uint pa)
+{
+  pgrefcount[pa >> PTXSHIFT]--;
+}
+
+void inc_refcount(uint pa)
+{
+  pgrefcount[pa >> PTXSHIFT]++;
+}
+
 // Initialization happens in two phases.
 // 1. main() calls kinit1() while still using entrypgdir to place just
 // the pages mapped by entrypgdir on free list.
@@ -51,6 +68,10 @@ void
 freerange(void *vstart, void *vend)
 {
   char *p;
+
+  // Assignment#4
+  memset(pgrefcount, 0, sizeof(pgrefcount));
+
   p = (char*)PGROUNDUP((uint)vstart);
   for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
     kfree(p);
@@ -76,7 +97,11 @@ kfree(char *v)
   r = (struct run*)v;
   r->next = kmem.freelist;
   kmem.freelist = r;
-  num_free_pages++;  // Assignment#4
+
+  // Assignment#4
+  num_free_pages++;
+  dec_refcount(V2P(v));
+
   if(kmem.use_lock)
     release(&kmem.lock);
 }
@@ -94,7 +119,10 @@ kalloc(void)
   r = kmem.freelist;
   if(r) {
     kmem.freelist = r->next;
-    num_free_pages--;  // Assignment#4
+
+    // Assignment#4
+    num_free_pages--;
+    inc_refcount(V2P(r));
   }
   if(kmem.use_lock)
     release(&kmem.lock);
