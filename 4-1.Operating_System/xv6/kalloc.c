@@ -74,7 +74,10 @@ freerange(void *vstart, void *vend)
 
   p = (char*)PGROUNDUP((uint)vstart);
   for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
+  {
+    pgrefcount[V2P(p) >> PTXSHIFT] = 0;
     kfree(p);
+  }
 }
 //PAGEBREAK: 21
 // Free the page of physical memory pointed at by v,
@@ -94,13 +97,21 @@ kfree(char *v)
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
-  r = (struct run*)v;
-  r->next = kmem.freelist;
-  kmem.freelist = r;
+  
+  if(get_refcount(V2P(v)) > 0)
+  {
+    dec_refcount(V2P(v));
+  }
 
-  // Assignment#4
-  num_free_pages++;
-  dec_refcount(V2P(v));
+  if (get_refcount(V2P(v)) == 0)
+  {
+    r = (struct run*)v;
+    r->next = kmem.freelist;
+    kmem.freelist = r;
+
+    // Assignment#4
+    num_free_pages++;
+  }
 
   if(kmem.use_lock)
     release(&kmem.lock);
