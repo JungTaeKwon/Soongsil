@@ -5,10 +5,18 @@
 #define PGSIZE 4096
 #define ARRAY_SIZE (4*PGSIZE)  // 여러 페이지에 걸쳐 테스트
 
-int
-main(void)
-{
-    printf(1, "=== COW Test Start ===\n");
+
+void getNumFreePagesTest(void){
+    int free_pages = getNumFreePages();
+    printf(1, "==========\n");
+    printf(1, "Student ID: 20192944\n");
+    printf(1, "Number of Free Pages: %d\n", free_pages);
+    printf(1, "==========\n");
+    exit();
+}
+
+void cowTest(void){
+printf(1, "=== COW Test Start ===\n");
     
     // 1. 처음 free한 페이지 수
     int initial_pages = getNumFreePages();
@@ -46,4 +54,11 @@ main(void)
     printf(1, "Final free pages: %d\n", getNumFreePages());
     printf(1, "=== COW Test End ===\n");
     exit();
-} 
+}
+
+int
+main(void)
+{
+    getNumFreePagesTest();
+    // cowTest();
+}
