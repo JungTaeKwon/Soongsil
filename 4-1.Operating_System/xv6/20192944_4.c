@@ -59,6 +59,6 @@ printf(1, "=== COW Test Start ===\n");
 int
 main(void)
 {
-    getNumFreePagesTest();
-    // cowTest();
+    // getNumFreePagesTest();
+    cowTest();
 }

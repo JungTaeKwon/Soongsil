@@ -35,12 +35,12 @@ uint get_refcount(uint pa)
 
 void dec_refcount(uint pa)
 {
-  pgrefcount[pa >> PTXSHIFT]--;
+  --pgrefcount[pa >> PTXSHIFT];
 }
 
 void inc_refcount(uint pa)
 {
-  pgrefcount[pa >> PTXSHIFT]++;
+  ++pgrefcount[pa >> PTXSHIFT];
 }
 
 // Initialization happens in two phases.
@@ -69,9 +69,6 @@ freerange(void *vstart, void *vend)
 {
   char *p;
 
-  // Assignment#4
-  memset(pgrefcount, 0, sizeof(pgrefcount));
-
   p = (char*)PGROUNDUP((uint)vstart);
   for(; p + PGSIZE <= (char*)vend; p += PGSIZE)
   {
@@ -92,19 +89,18 @@ kfree(char *v)
   if((uint)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
     panic("kfree");
 
-  // Fill with junk to catch dangling refs.
-  memset(v, 1, PGSIZE);
-
   if(kmem.use_lock)
     acquire(&kmem.lock);
   
-  if(get_refcount(V2P(v)) > 0)
+   if(get_refcount(V2P(v)) > 0)
   {
     dec_refcount(V2P(v));
   }
 
   if (get_refcount(V2P(v)) == 0)
   {
+    // Fill with junk to catch dangling refs.
+    memset(v, 1, PGSIZE);
     r = (struct run*)v;
     r->next = kmem.freelist;
     kmem.freelist = r;
@@ -133,7 +129,7 @@ kalloc(void)
 
     // Assignment#4
     num_free_pages--;
-    inc_refcount(V2P(r));
+    pgrefcount[V2P((char*)r) >> PTXSHIFT] = 1;
   }
   if(kmem.use_lock)
     release(&kmem.lock);

@@ -202,3 +202,5 @@ int sys_getNumFreePages(void);
 uint get_refcount(uint);
 void dec_refcount(uint);
 void inc_refcount(uint);
+
+void pagefault(void);

@@ -312,39 +312,61 @@ clearpteu(pde_t *pgdir, char *uva)
 
 // Given a parent process's page table, create a copy
 // of it for a child.
-pde_t*
-copyuvm(pde_t *pgdir, uint sz)
+pde_t* copyuvm(pde_t *pgdir, uint sz)
 {
-  pde_t *d;
-  pte_t *pte;
-  uint pa, i, flags;
-  char *mem;
+  // Parameters:
+  // pgdir: 현재 프로세스 페이지 디렉토리
+  // sz: 현재 프로세스 크기
 
+  pde_t *d;          // 새로운 페이지 디렉토리
+  pte_t *pte;        // 페이지 테이블 엔트리
+  uint pa, i, flags; // 물리주소, 반복자, 플래그 변수
+  // char *mem;         // 새로 할당할 메모리 포인터
+
+  // 커널 페이지 테이블 설정 - 실패시 0 반환
   if((d = setupkvm()) == 0)
     return 0;
+
+  // 프로세스의 전체 메모리 공간을 페이지 단위로 순회
   for(i = 0; i < sz; i += PGSIZE){
+    // 현재 가상주소에 대한 PTE 찾기 >> 없으면 에러
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
+
+    // PTE가 present bit 설정되어 있는지 확인 >> 아니면  에러
+    // 수업 시간에 배운 valid bit가 present bit와 같은 의미
     if(!(*pte & PTE_P))
       panic("copyuvm: page not present");
-    pa = PTE_ADDR(*pte);
-    flags = PTE_FLAGS(*pte);
-    
-    if((mem = kalloc()) == 0)
-      goto bad;
-    memmove(mem, (char*)P2V(pa), PGSIZE);
 
-    // Assignment#4
-    inc_refcount(V2P(mem));
+    *pte &= ~PTE_W; // page table entry의 PTE_W 비트를 0으로 만들어서 read-only로 만듦
+
+    // 현재 페이지의 물리주소와 플래그 정보 추출
+    pa = PTE_ADDR(*pte);     // 물리주소 얻기
+    flags = PTE_FLAGS(*pte); // 권한 플래그 얻기
     
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
-      kfree(mem);
+    // // 여기서부터 실제 할당 부분..
+    // // 새 물리 페이지 할당 >> 실패시 에러처리로 이동
+    // if((mem = kalloc()) == 0)
+    //   goto bad;
+
+    // // 원본 페이지 내용을 새 페이지로 복사
+    // memmove(mem, (char*)P2V(pa), PGSIZE);
+    // // 여기까지 실제 할당 부분..
+
+    
+    // 새 페이지를 페이지 테이블에 매핑 >> 실패시 정리 후 에러처리
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0) {
+      // kfree(mem);
       goto bad;
     }
+    // 참조 카운트 증가 (COW 구현을 위한 부분)
+    inc_refcount(pa);
   }
-  return d;
+  lcr3(V2P(pgdir));
+  return d; // 성공시 새 페이지 디렉토리 반환
 
 bad:
+  // 에러 발생시 할당된 모든 자원을 해제하고 0 반환
   freevm(d);
   return 0;
 }
@@ -397,3 +419,43 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 //PAGEBREAK!
 // Blank page.
 
+void pagefault(void) {
+  /*
+  - rcr2() 함수를 호출하여 page fault 가 발생한 VA 읽어 들인다.
+  - rcr2(): read CR2 register
+  - CR2 는 x86 에서 page fault address 를 저장하는 register 임
+  - 해당 가상 주소의 page table entry 확인후 PA 찾는다.▪ PA 를 이용하여 해당 메모리 페이지의 reference counter 값 확인
+  - reference counter 가 1 보다 큰 경우 새로운 페이지를 할당 받아서 복사
+  - reference counter 가 1 인경우 현재 pte 의 write 권한만 추가
+   */
+  uint va = rcr2();
+  pte_t *pte;
+  char *mem;
+  struct proc *curproc = myproc();
+
+  // 페이지 테이블 엔트리 찾기
+  pte = walkpgdir(curproc->pgdir, (void*)va, 0);
+  if(pte == 0)
+    panic("pagefault: pte should exist");
+
+  // 물리 주소 얻기
+  uint pa = PTE_ADDR(*pte);
+
+  // reference counter 확인
+  uint ref = get_refcount(pa);
+  
+  if(ref > 1) {
+    // 새 페이지 할당 및 복사
+    mem = kalloc();
+    if(mem == 0)
+      panic("pagefault: out of memory");
+    memmove(mem, (char *)P2V(pa), PGSIZE);
+    *pte = V2P(mem) | PTE_P | PTE_U | PTE_W;
+    dec_refcount(pa);
+  } else if (ref==1){
+    // write 권한 추가
+    *pte |= PTE_W;
+  }
+  
+  lcr3(V2P(curproc->pgdir)); // TLB flush
+}
