@@ -45,17 +45,16 @@ class Test {
             assertTrue(parallel_run(10));
     }
 
+
     public static boolean parallel_run(int numTests){
         /**
-         * This function tests if 1) the instance of SimpleLogger is singleton in multi-thread setting, and
-         * 2) the logger correctly preserves the occurred log messages (i.e., getNumLogs() should be numTests)
+         * This function tests if
+         * - 1) the instance of SimpleLogger is singleton in the multi-thread setting, and
+         * - 2) the logger correctly preserves the occurred log messages (i.e., getNumLogs() should be numTests for each trial)
          */
         ExecutorService service = Executors.newCachedThreadPool();
 
-        SimpleLogger logger = SimpleLogger.getInstance();
-        logger.clear();
-        logger.setHandler(new PrintStream(OutputStream.nullOutputStream()));
-
+        // Try to log messages over multiple threads
         SimpleLogger[] loggers = new SimpleLogger[numTests];
         for(int i = 0; i < numTests; i++){
             final int idx = i;
@@ -65,16 +64,27 @@ class Test {
                 loggers[idx].log(LogLevel.INFO, String.format("This is log from [%s]-th thread", idx));
             });
         }
+
         service.shutdown();
+
         try {
             service.awaitTermination(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            SimpleLogger logger = loggers[0];
+            // check if the logger correctly contains all messages
+            // - if multiple instances are generated, log messages are distributed over the instances
             boolean doesContainAllMessages = logger.getNumLogs() == numTests;
+
+            // check if all references in loggers are the same
             boolean areAllObjectsSame = true;
-            for(SimpleLogger _logger : loggers) // check all references in loggers
+            for(SimpleLogger _logger : loggers)
                 areAllObjectsSame = areAllObjectsSame && (logger == _logger);
+
+            // remove all messages for the next trial
+            logger.clear();
+
             return doesContainAllMessages && areAllObjectsSame;
         }
     }
